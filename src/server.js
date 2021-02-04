@@ -3,10 +3,17 @@
 const path=require("path");
 const APP_ROOT_DIR = path.join(__dirname, '..');
 
-const result = require('dotenv-safe').config({
-  path: path.join(APP_ROOT_DIR, '.env'),
-  example: path.join(APP_ROOT_DIR, '.env.example'),
-});
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "client/build")));
+}
+else{
+    const result = require('dotenv-safe').config({
+    path: path.join(APP_ROOT_DIR, '.env'),
+    example: path.join(APP_ROOT_DIR, '.env.example'),
+    });
+}
+
+
 
 const bodyparser=require("body-parser");
 const express=require("express");
