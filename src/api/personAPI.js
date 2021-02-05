@@ -31,6 +31,7 @@ class PersonApi extends RequestHandler {
    * Registers the request handling functions.
    */
   async registerHandler() {
+    console.log("In PersonAPI's registerHandler");
     try {
       await this.retrieveController();
       /*
