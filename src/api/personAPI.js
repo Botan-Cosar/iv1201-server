@@ -33,7 +33,9 @@ class PersonApi extends RequestHandler {
   async registerHandler() {
     console.log("In PersonAPI's registerHandler");
     try {
+      console.log("before retrieveController");
       await this.retrieveController();
+      console.log("after retrieveController");
       /*
        * Returns the specified person.
        *
@@ -44,7 +46,9 @@ class PersonApi extends RequestHandler {
       this.router.get(
           '/:id',
           async (req, res, next) => {
+            console.log("personAPI in async (line 47)");
             try {
+              console.log("returning hej");
               /*
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {
