@@ -49,7 +49,7 @@ class PersonApi extends RequestHandler {
             //console.log("personAPI in async (line 47)");
             try {
               //console.log("returning hej");
-              /*
+
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {
                 this.sendHttpResponse(res, 404, 'No such person');
@@ -57,8 +57,6 @@ class PersonApi extends RequestHandler {
               }
 
               this.sendHttpResponse(res, 200, person);
-              */
-              return res.send("hej");
             } catch (err) {
               next(err);
             }
