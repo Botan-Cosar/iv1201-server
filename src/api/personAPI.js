@@ -50,7 +50,7 @@ class PersonApi extends RequestHandler {
                 this.sendHttpResponse(res, 404, 'No such person');
                 return;
               }
-              
+
               this.sendHttpResponse(res, 200, person);
               */
               return res.send("hej");
@@ -60,6 +60,7 @@ class PersonApi extends RequestHandler {
           }
       );
     } catch (err) {
+      console.error(err);
       //this.logger.logException(err);
     }
   }
