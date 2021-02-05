@@ -21,7 +21,11 @@ app.use(cookieParser());
 
 app.get("/",(req,res)=>{
     return res.send("Welcome");
-})
+});
+
+app.get("/test",(req,res)=>{
+    return res.send("this is a test");
+});
 
 const reqHandlerLoader = require('./api');
 reqHandlerLoader.loadHandlers(app);
