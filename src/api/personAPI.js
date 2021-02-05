@@ -44,12 +44,16 @@ class PersonApi extends RequestHandler {
           '/:id',
           async (req, res, next) => {
             try {
+              /*
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {
                 this.sendHttpResponse(res, 404, 'No such person');
                 return;
               }
+              
               this.sendHttpResponse(res, 200, person);
+              */
+              return res.send("hej");
             } catch (err) {
               next(err);
             }
