@@ -13,12 +13,22 @@ class DAO {
    * Creates a new instance and connects to the database.
    */
   constructor() {
-    this.database = new Sequelize(
-        process.env.DB_NAME,
-        process.env.DB_USER,
-        process.env.DB_PASS,
-        {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:process.env.DB_PORT}
-    );
+    if(process.env.NODE_ENV === "production"){
+      console.log("production");
+      this.database = new Sequelize(
+        process.env.DATABASE_URL, {
+          dialect: 'postgres',
+          protocol: 'postgres'
+      });
+    }
+    else{
+      this.database = new Sequelize(
+          process.env.DB_NAME,
+          process.env.DB_USER,
+          process.env.DB_PASS,
+          {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:process.env.DB_PORT}
+      );
+    }
     Person.createModel(this.database);
   }
 
@@ -29,8 +39,11 @@ class DAO {
    */
   async createTables() {
     try {
+        console.log("before auth");
         await this.database.authenticate();
+        console.log("after auth");
         await this.database.sync({force: false});
+        console.log("after sync");
     } catch (err) {
         throw new Error('Could not connect to database.');
     }
