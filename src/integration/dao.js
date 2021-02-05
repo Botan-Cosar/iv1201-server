@@ -17,7 +17,7 @@ class DAO {
         process.env.DB_NAME,
         process.env.DB_USER,
         process.env.DB_PASS,
-        {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:5433}
+        {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:process.env.DB_PORT}
     );
     Person.createModel(this.database);
   }
