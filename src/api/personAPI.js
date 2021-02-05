@@ -1,6 +1,6 @@
 'use strict';
 
-const RequestHandler = require('./RequestHandler');
+const RequestHandler = require('./requestHandler');
 
 /**
  * Defines the REST API with endpoints related to persons.
