@@ -18,10 +18,7 @@ class DAO {
       this.database = new Sequelize(
         process.env.DATABASE_URL, {
           dialect: 'postgres',
-          protocol: 'postgres',
-          dialectOptions: {
-              ssl: true
-          }
+          protocol: 'postgres'
       });
     }
     else{
