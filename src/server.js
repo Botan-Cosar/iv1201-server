@@ -3,17 +3,12 @@
 const path=require("path");
 const APP_ROOT_DIR = path.join(__dirname, '..');
 
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname, "client/build")));
-}
-else{
+if (process.env.NODE_ENV !== "production") {
     const result = require('dotenv-safe').config({
     path: path.join(APP_ROOT_DIR, '.env'),
     example: path.join(APP_ROOT_DIR, '.env.example'),
     });
 }
-
-
 
 const bodyparser=require("body-parser");
 const express=require("express");
@@ -32,7 +27,7 @@ const reqHandlerLoader = require('./api');
 reqHandlerLoader.loadHandlers(app);
 //reqHandlerLoader.loadErrorHandlers(app);
 
-const port=process.env.PORT||5000;
+const port=process.env.PORT||process.env.SERVER_PORT;
 const server=app.listen(port,()=>{
     console.log(`Server is up at port: ${port}`);
 });
