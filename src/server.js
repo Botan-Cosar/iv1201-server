@@ -12,12 +12,15 @@ if (process.env.NODE_ENV !== "production") {
 
 const bodyparser=require("body-parser");
 const express=require("express");
+const cors=require("cors");
 const app=express();
 
 app.use(bodyparser.json());
 
 const cookieParser = require('cookie-parser');
 app.use(cookieParser());
+
+app.use(cors());
 
 app.get("/",(req,res)=>{
     return res.send("Welcome");
