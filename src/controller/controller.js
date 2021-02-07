@@ -36,5 +36,17 @@ class Controller {
   findPerson(id) {
     return this.dao.findPersonById(id);
   }
+
+  /**
+   * Saves a specified person in the database.
+   * 
+   * @param {Object} person The person to register.
+   * @return {Object} success object with the newly saved person inside.
+   * 
+   * @throws Throws an exception if failed to save the person.
+   */
+  savePerson(person){
+    return this.dao.savePerson(person);
+  }
 }
 module.exports = Controller;

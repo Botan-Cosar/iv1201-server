@@ -33,6 +33,28 @@ class PersonApi extends RequestHandler {
   async registerHandler() {
     try {
       await this.retrieveController();
+
+      /**
+       * Saves a specified person in the database.
+       * return 200: Success object with the newly created person inside.
+       *        404: If the specified person could not be saved.
+       */
+      this.router.post(
+        '/',
+        async (req,res,next)=>{
+          try {
+            const response=await this.contr.savePerson(req.body);
+            if(response===null){
+              this.sendHttpResponse(res,404,'Could not save person');
+              return;
+            }
+            this.sendHttpResponse(res,200,response);
+          } catch (err) {
+            next(err);
+          }
+        }
+      );
+
       /*
        * Returns the specified person.
        *

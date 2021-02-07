@@ -14,7 +14,6 @@ class DAO {
    */
   constructor() {
     if(process.env.NODE_ENV === "production"){
-      console.log("production");
       this.database = new Sequelize(
         process.env.DATABASE_URL, {
           dialect: 'postgres',
@@ -39,23 +38,20 @@ class DAO {
    */
   async createTables() {
     try {
-        console.log("before auth");
         await this.database.authenticate();
-        console.log("after auth");
         await this.database.sync({force: false});
-        console.log("after sync");
     } catch (err) {
         throw new Error('Could not connect to database.');
     }
   }
 
   /**
-   * Searches for a user with the specified id.
+   * Searches for a person with the specified id.
    *
    * @param {number} id The id of the searched person.
-   * @return {PersonDTO} The user with the specified id, or null if there was
-   *                  no such user.
-   * @throws Throws an exception if failed to search for the specified user.
+   * @return {PersonDTO} The person with the specified id, or null if there was
+   *                  no such person.
+   * @throws Throws an exception if failed to search for the specified person.
    */
   async findPersonById(id) {
     try {
@@ -66,6 +62,22 @@ class DAO {
       return this.createPersonDto(personModel);
     } catch (err) {
           throw "could not find person.";
+    }
+  }
+
+  /**
+   * Saves a specified person in the database.
+   * 
+   * @param {Object} person The person to register.
+   * @return {Object} success object with the newly saved person inside.
+   * 
+   * @throws Throws an exception if failed to save the person.
+   */
+  async savePerson(person){
+    try {
+      return Person.create(person);
+    } catch (error) {
+      throw "could not create person.";
     }
   }
 

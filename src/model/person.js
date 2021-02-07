@@ -25,6 +25,7 @@ class Person extends Sequelize.Model {
           person_id:{
             type:Sequelize.BIGINT,
             primaryKey:true,
+            autoIncrement:true,
           },
           name:{
             type:Sequelize.STRING,
