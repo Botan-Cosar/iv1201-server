@@ -3,6 +3,7 @@
 const Sequelize = require('sequelize');
 const PersonDTO = require('../model/personDTO');
 const Person = require('../model/person');
+const Role = require('../model/role');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -28,6 +29,7 @@ class DAO {
           {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:process.env.DB_PORT}
       );
     }
+    Role.createModel(this.database);
     Person.createModel(this.database);
   }
 
@@ -55,7 +57,13 @@ class DAO {
    */
   async findPersonById(id) {
     try {
-      const personModel = await Person.findByPk(id);
+      const personModel = await Person.findByPk(id,{
+        include:{
+          model:Role,
+          required:true,
+        }
+      });
+      //console.log(JSON.stringify(personModel));
       if (personModel === null) {
         return null;
       }

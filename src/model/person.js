@@ -1,6 +1,7 @@
 'use strict';
 
 const Sequelize = require('sequelize');
+const Role=require('./role');
 
 /**
  * A Person.
@@ -47,10 +48,6 @@ class Person extends Sequelize.Model {
             type:Sequelize.STRING,
             allowNull:false,
           },
-          role_id:{
-            type:Sequelize.BIGINT,
-            allowNull:false,
-          },
           username: {
             type: Sequelize.STRING,
             allowNull: false,
@@ -66,6 +63,9 @@ class Person extends Sequelize.Model {
           deletedAt:false,
         }
     );
+    Person.belongsTo(Role,{
+      foreignKey:'role_id',
+    });
     return Person;
   }
 }
