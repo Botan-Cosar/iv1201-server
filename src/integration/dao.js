@@ -40,8 +40,11 @@ class DAO {
    */
   async createTables() {
     try {
+        console.log("before auth");
         await this.database.authenticate();
+        console.log("after auth");
         await this.database.sync({force: false});
+        console.log("after sync");
     } catch (err) {
         throw new Error('Could not connect to database.');
     }

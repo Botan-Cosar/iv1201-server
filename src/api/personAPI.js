@@ -31,8 +31,11 @@ class PersonApi extends RequestHandler {
    * Registers the request handling functions.
    */
   async registerHandler() {
+    //console.log("In PersonAPI's registerHandler");
     try {
+      //console.log("before retrieveController");
       await this.retrieveController();
+<<<<<<< HEAD
 
       /**
        * Saves a specified person in the database.
@@ -55,6 +58,9 @@ class PersonApi extends RequestHandler {
         }
       );
 
+=======
+      //console.log("after retrieveController");
+>>>>>>> f5daedc4068b8a7860a36a9dff757cfedff0b02a
       /*
        * Returns the specified person.
        *
@@ -65,7 +71,13 @@ class PersonApi extends RequestHandler {
       this.router.get(
           '/:id',
           async (req, res, next) => {
+            //console.log("personAPI in async (line 47)");
             try {
+<<<<<<< HEAD
+=======
+              //console.log("returning hej");
+
+>>>>>>> f5daedc4068b8a7860a36a9dff757cfedff0b02a
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {
                 this.sendHttpResponse(res, 404, 'No such person');
