@@ -40,11 +40,8 @@ class DAO {
    */
   async createTables() {
     try {
-        console.log("before auth");
         await this.database.authenticate();
-        console.log("after auth");
         await this.database.sync({force: false});
-        console.log("after sync");
     } catch (err) {
         throw new Error('Could not connect to database.');
     }
@@ -89,6 +86,24 @@ class DAO {
       return Person.create(person);
     } catch (error) {
       throw "could not create person.";
+    }
+  }
+
+  async login(person){
+    try {
+      const personModel=await Person.findOne({
+        where:{
+          username:person.username,
+          password:person.password
+        }
+      });
+      //console.log(personModel);
+      if (personModel === null) {
+        return null;
+      }
+      return this.createPersonDto(personModel);
+    } catch (error) {
+      throw "could not login.";
     }
   }
 

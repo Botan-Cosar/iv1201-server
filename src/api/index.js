@@ -1,6 +1,7 @@
 'use strict';
 
 const PersonApi = require('./personAPI');
+const LoginApi = require('./loginAPI');
 
 /**
  * Contains all request handlers.
@@ -11,7 +12,6 @@ class RequestHandlerLoader {
    */
   constructor() {
     this.reqHandlers = [];
-    console.log("Making RequestHandlerLoader...");
   }
 
   /**
@@ -31,7 +31,6 @@ class RequestHandlerLoader {
    */
   loadHandlers(app) {
     this.reqHandlers.forEach((reqHandler) => {
-      console.log("Adding: " + reqHandler.path + " to path: " + reqHandler.router);
       reqHandler.registerHandler();
       app.use(reqHandler.path, reqHandler.router);
     });
@@ -40,5 +39,6 @@ class RequestHandlerLoader {
 
 const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new PersonApi());
+loader.addRequestHandler(new LoginApi());
 
 module.exports = loader;

@@ -48,5 +48,9 @@ class Controller {
   savePerson(person){
     return this.dao.savePerson(person);
   }
+
+  login(person){
+    return this.dao.login(person);
+  }
 }
 module.exports = Controller;
