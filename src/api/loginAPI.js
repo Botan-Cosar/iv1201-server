@@ -46,8 +46,9 @@ class LoginApi extends RequestHandler {
               return;
             }
             jwt.sign({person: response}, process.env.JWT_SECRET, { expiresIn: "30m" }, (err, token) => {
-              console.log("\n" + JSON.stringify(response) + "\n");
+              console.log("token: " + token);
               response.token = token;
+              console.log("\n" + JSON.stringify(response) + "\n");
               this.sendHttpResponse(res,200,response);
             })
           } catch (err) {
