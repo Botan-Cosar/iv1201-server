@@ -53,5 +53,13 @@ class Controller {
   login(person){
     return this.dao.login(person);
   }
+
+  submitApplication({person_id,competencies,periods}){
+    //console.log(JSON.stringify(person_id));
+    //console.log(JSON.stringify(competencies));
+    //console.log(JSON.stringify(periods));
+    competencies.forEach(competence=>this.dao.saveCompetence(person_id,competence));
+    return "hej";
+  }
 }
 module.exports = Controller;

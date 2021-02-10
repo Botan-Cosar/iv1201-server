@@ -2,6 +2,7 @@
 
 const PersonApi = require('./personAPI');
 const LoginApi = require('./loginAPI');
+const ApplicationApi = require('./applicationAPI');
 
 /**
  * Contains all request handlers.
@@ -40,5 +41,6 @@ class RequestHandlerLoader {
 const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new PersonApi());
 loader.addRequestHandler(new LoginApi());
+loader.addRequestHandler(new ApplicationApi());
 
 module.exports = loader;

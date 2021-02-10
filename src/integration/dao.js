@@ -4,6 +4,8 @@ const Sequelize = require('sequelize');
 const PersonDTO = require('../model/personDTO');
 const Person = require('../model/person');
 const Role = require('../model/role');
+const CompetenceProfile=require('../model/competenceProfile');
+const Competence=require('../model/competence');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -31,6 +33,8 @@ class DAO {
     }
     Role.createModel(this.database);
     Person.createModel(this.database);
+    Competence.createModel(this.database);
+    CompetenceProfile.createModel(this.database);
   }
 
   /**
@@ -104,6 +108,16 @@ class DAO {
       return this.createPersonDto(personModel);
     } catch (error) {
       throw "could not login.";
+    }
+  }
+
+  async saveCompetence(person_id,competence){
+    console.log(JSON.stringify({person_id,competence_id:competence[0],years_of_experience:competence[1]}));
+    try {
+      const competenceModel=await CompetenceProfile.create({person_id,competence_id:competence[0],years_of_experience:competence[1]});
+      console.log(competenceModel);
+    } catch (error) {
+      throw "could not save competence.";
     }
   }
 
