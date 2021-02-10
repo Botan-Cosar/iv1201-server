@@ -1,5 +1,7 @@
 'use strict';
 
+const jwt = require("jsonwebtoken");
+
 const RequestHandler = require('./requestHandler');
 
 /**
@@ -43,7 +45,11 @@ class LoginApi extends RequestHandler {
               this.sendHttpResponse(res,404,'Could not login');
               return;
             }
-            this.sendHttpResponse(res,200,response);
+            jwt.sign({person: response}, process.env.JWT_SECRET, { expiresIn: "30m" }, (err, token) => {
+              console.log("\n" + JSON.stringify(response) + "\n");
+              response.token = token;
+              this.sendHttpResponse(res,200,response);
+            })
           } catch (err) {
             next(err);
           }
