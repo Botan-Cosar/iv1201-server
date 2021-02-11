@@ -79,10 +79,10 @@ class DAO {
 
   /**
    * Saves a specified person in the database.
-   * 
+   *
    * @param {Object} person The person to register.
    * @return {Object} success object with the newly saved person inside.
-   * 
+   *
    * @throws Throws an exception if failed to save the person.
    */
   async savePerson(person){
@@ -105,7 +105,12 @@ class DAO {
       if (personModel === null) {
         return null;
       }
-      return this.createPersonDto(personModel);
+      let returnObject = {
+        username: personModel.username,
+        email: personModel.email,
+        role_id: personModel.role_id
+      };
+      return this.createPersonDto(returnObject);
     } catch (error) {
       throw "could not login.";
     }
