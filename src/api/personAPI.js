@@ -1,7 +1,7 @@
 'use strict';
 
 const RequestHandler = require('./requestHandler');
-const VerifyToken = require('./authorization.js');
+const Authorizer = require('./authorization.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -66,7 +66,7 @@ class PersonApi extends RequestHandler {
        *        404: If the specified person did not exist.
        */
       this.router.get(
-          '/:id', VerifyToken,
+          '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
           async (req, res, next) => {
             //console.log("personAPI in async (line 47)");
             try {

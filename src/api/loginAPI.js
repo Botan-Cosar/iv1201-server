@@ -45,7 +45,7 @@ class LoginApi extends RequestHandler {
               this.sendHttpResponse(res,404,'Could not login');
               return;
             }
-            jwt.sign({person: response}, process.env.JWT_SECRET, { expiresIn: "30m" }, (err, token) => {
+            jwt.sign({person: response}, process.env.JWT_SECRET, (err, token) => {
               console.log("token: " + token);
               response.token = token;
               console.log("\n" + JSON.stringify(response) + "\n");

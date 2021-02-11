@@ -33,14 +33,35 @@ function verifyToken(req, res, next){
       else{
         //add logging (token accepted)
         req.body.auth = authData.person;
-        console.log(req.body);
+        console.log("\nAUTH BODY: \n" + req.body + "\n");
         next();
       }
     });
   }
   else{
-    return res.status(403).send("Unauthorised 2!");
+    return res.status(403).send("Unauthorized");
   }
 }
 
-module.exports = verifyToken;
+/**
+ * Middleware to verify that the user is a recruiter.
+ * Used before accessing pages where recruiter rights is neeeded.
+ * @param {req} req The express Request object.
+ * @param {res} res The express Response object.
+ * @param {next} next The next function to execute.
+ */
+function isRecruiter(req, res, next){
+  console.log("\nverifying role...\n");
+  //If user is a recruiter (role_id == 1)
+  if(req.body.auth.role_id == 1){
+    next();
+  }
+  else{ //Else user does not have right to access page.
+    return res.status(403).send("Unauthorized, only recruiters can access this page");
+  }
+}
+
+module.exports = {
+  verifyToken: verifyToken,
+  isRecruiter: isRecruiter
+}
