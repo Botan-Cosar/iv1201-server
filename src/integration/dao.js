@@ -20,7 +20,8 @@ class DAO {
       this.database = new Sequelize(
         process.env.DATABASE_URL, {
           dialect: 'postgres',
-          protocol: 'postgres'
+          protocol: 'postgres',
+          logging: env.LOG_SEQUALIZE ? "console.log" : false,
       });
     }
     else{
