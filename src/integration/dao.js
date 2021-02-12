@@ -37,8 +37,8 @@ class DAO {
           }
       );
     }
+    this.database.options.logging = false;
     console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
-    console.log("value of LOG_SEQUALIZE: " + process.env.LOG_SEQUALIZE);
 
     Role.createModel(this.database);
     Person.createModel(this.database);
@@ -73,7 +73,7 @@ class DAO {
       const personModel = await Person.findByPk(id,{
         include:{
           model:Role,
-          required:true,
+          required:true
         }
       });
       //console.log(JSON.stringify(personModel));
