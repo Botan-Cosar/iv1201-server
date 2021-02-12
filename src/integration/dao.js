@@ -93,6 +93,14 @@ class DAO {
     }
   }
 
+  /**
+   * Logs in the user
+   *
+   * @param {Object} person The person trying to log in.
+   * @return {personDTO} success object with the logged in user's personDTO.
+   *
+   * @throws Throws an "could not log in" exception if failed to log in.
+   */
   async login(person){
     try {
       const personModel=await Person.findOne({
@@ -112,7 +120,7 @@ class DAO {
       };
       return this.createPersonDto(returnObject);
     } catch (error) {
-      throw "could not login.";
+      throw "could not log in.";
     }
   }
 

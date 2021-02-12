@@ -3,21 +3,21 @@
 const Sequelize = require('sequelize');
 
 /**
- * A Person.
+ * A Role.
  */
 class Role extends Sequelize.Model {
   /**
-   * The name of the Person model.
+   * The name of the Role model.
    */
   static get ROLE_MODEL_NAME() {
     return 'role';
   }
 
   /**
-   * Defines the Person entity.
+   * Defines the Role entity.
    *
    * @param {Sequelize} sequelize The sequelize object.
-   * @return {Model} A sequelize model describing the Person entity.
+   * @return {Model} A sequelize model describing the Role entity.
    */
   static createModel(sequelize) {
     Role.init(
