@@ -19,6 +19,7 @@ class Controller {
    * Instantiates a new Controller object.
    *
    * @return {Controller} The newly created controller.
+   * @throws Throws and exception if connection to DB failed.
    */
   static async createController() {
     const contr = new Controller();
@@ -39,21 +40,32 @@ class Controller {
 
   /**
    * Saves a specified person in the database.
-   * 
+   *
    * @param {Object} person The person to register.
    * @return {Object} success object with the newly saved person inside.
-   * 
+   *
    * @throws Throws an exception if failed to save the person.
    */
   savePerson(person){
     person={...person,role_id:2};
     return this.dao.savePerson(person);
   }
-
+  /**
+   * Logs in the user
+   *
+   * @param {Object} person The person trying to log in.
+   * @return {Object} success object with the logged in user's data, including the verification token.
+   *
+   * @throws Throws an exception if failed to log in.
+   */
   login(person){
     return this.dao.login(person);
   }
 
+  /**
+   * Submits an application from the logged in user (MIGHT BE WRONG UPDATE COMMENT
+      (AND ADD PARAMS AND SO ON; CAPS))
+   */
   submitApplication({person_id,competencies,periods}){
     //console.log(JSON.stringify(person_id));
     //console.log(JSON.stringify(competencies));

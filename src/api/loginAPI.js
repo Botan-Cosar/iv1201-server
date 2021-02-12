@@ -36,19 +36,25 @@ class LoginApi extends RequestHandler {
     try {
       await this.retrieveController();
 
+      /**
+       * Logs in the user if login details match database
+       *
+       * @return {obj} http response with code 200 including the user's
+       *               username, role, name and verification token.
+       *               404: Could not log in.
+       * @throws ???
+       */
       this.router.post(
         '/',
         async (req,res,next)=>{
           try {
             const response=await this.contr.login(req.body);
             if(response===null){
-              this.sendHttpResponse(res,404,'Could not login');
+              this.sendHttpResponse(res,404,'Could not log in');
               return;
             }
-            jwt.sign({person: response}, process.env.JWT_SECRET, { expiresIn: "30m" }, (err, token) => {
-              console.log("token: " + token);
+            jwt.sign({person: response}, process.env.JWT_SECRET, (err, token) => {
               response.token = token;
-              console.log("\n" + JSON.stringify(response) + "\n");
               this.sendHttpResponse(res,200,response);
             })
           } catch (err) {

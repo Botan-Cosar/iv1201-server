@@ -20,7 +20,8 @@ class DAO {
       this.database = new Sequelize(
         process.env.DATABASE_URL, {
           dialect: 'postgres',
-          protocol: 'postgres'
+          protocol: 'postgres',
+          logging: process.env.LOG_SEQUALIZE === "true" ? console.log : false
       });
     }
     else{
@@ -28,9 +29,16 @@ class DAO {
           process.env.DB_NAME,
           process.env.DB_USER,
           process.env.DB_PASS,
-          {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:process.env.DB_PORT}
+          {
+            host: process.env.DB_HOST,
+            dialect: process.env.DB_DIALECT,
+            port:process.env.DB_PORT,
+            logging: process.env.LOG_SEQUALIZE === "true" ? console.log : false
+          }
       );
     }
+    console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
+
     Role.createModel(this.database);
     Person.createModel(this.database);
     Competence.createModel(this.database);
@@ -64,7 +72,7 @@ class DAO {
       const personModel = await Person.findByPk(id,{
         include:{
           model:Role,
-          required:true,
+          required:true
         }
       });
       //console.log(JSON.stringify(personModel));
@@ -93,6 +101,14 @@ class DAO {
     }
   }
 
+  /**
+   * Logs in the user
+   *
+   * @param {Object} person The person trying to log in.
+   * @return {personDTO} success object with the logged in user's personDTO.
+   *
+   * @throws Throws an "could not log in" exception if failed to log in.
+   */
   async login(person){
     try {
       const personModel=await Person.findOne({
@@ -116,6 +132,14 @@ class DAO {
     }
   }
 
+  /**
+   * Updates a competence profile if a matching person_id and competence_id already exists. Creates a new entry otherwise.
+   *
+   * @param {number} person_id The id of the person
+   * @param {object} competence A competence id along with years of experience.
+   *
+   * @throws Throws a "could not save competence profile." exception if failed to create competence profile.
+   */
   async updateOrCreateCompetenceProfile(person_id,competence){
     try {
       const competenceProfile={person_id,competence_id:competence[0],years_of_experience:competence[1]};
@@ -128,6 +152,14 @@ class DAO {
     }
   }
 
+  /**
+   * Updates a competence profile entry.
+   * 
+   * @param {object} object Consists of: person_id, competence_id, and years_of_experience
+   * @return {object} Array of updated entries.
+   * 
+   * @throws Throws a "could not update competence profile." error if the entry could not be updated. 
+   */
   async updateCompetenceProfile({person_id,competence_id,years_of_experience}){
     try {
       const competenceModel=await CompetenceProfile.update({
@@ -144,6 +176,14 @@ class DAO {
     }
   }
 
+  /**
+   * Updates a competence profile entry.
+   * 
+   * @param {object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
+   * @return {object} The newly created competence_profile.
+   * 
+   * @throws Throws a "could not create competence profile." error if the entry could not be created. 
+   */
   async createCompetenceProfile(competenceProfile){
     console.log(competenceProfile);
     try {

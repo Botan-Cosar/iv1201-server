@@ -1,7 +1,7 @@
 'use strict';
 
 const RequestHandler = require('./requestHandler');
-const VerifyToken = require('./authorization.js');
+const Authorizer = require('./authorization.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -32,15 +32,13 @@ class PersonApi extends RequestHandler {
    * Registers the request handling functions.
    */
   async registerHandler() {
-    //console.log("In PersonAPI's registerHandler");
     try {
-      //console.log("before retrieveController");
       await this.retrieveController();
-
       /**
        * Saves a specified person in the database.
-       * return 200: Success object with the newly created person inside.
-       *        404: If the specified person could not be saved.
+       * @return {obj} 200: Success object with the newly created person inside.
+       *               404: If the specified person could not be saved.
+       * @throws ???
        */
       this.router.post(
         '/',
@@ -58,15 +56,16 @@ class PersonApi extends RequestHandler {
         }
       );
 
-      /*
-       * Returns the specified person.
-       *
-       * parameter id The id of the person that shall be returned.
-       * return 200: The searched person.
-       *        404: If the specified person did not exist.
-       */
+       /**
+        * Returns the specified person.
+        *
+        * @param {int} id The id of the person that shall be returned.
+        * @return {obj} 200: The searched person.
+        *               404: If the specified person did not exist.
+        * @throws ???
+        */
       this.router.get(
-          '/:id', VerifyToken,
+          '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
           async (req, res, next) => {
             //console.log("personAPI in async (line 47)");
             try {
