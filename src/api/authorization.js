@@ -27,12 +27,12 @@ function verifyToken(req, res, next){
     req.token = token;
     jwt.verify(token, process.env.JWT_SECRET, (err, authData) => {
       if(err){
+        console.log("Invalid token");
         return res.status(403).send("Invalid token!");
       }
       else{
         //add logging (token accepted)
         req.body.auth = authData.person;
-        console.log("\nAUTH BODY: \n" + req.body + "\n");
         next();
       }
     });
@@ -50,7 +50,6 @@ function verifyToken(req, res, next){
  * @param {next} next The next function to execute.
  */
 function isRecruiter(req, res, next){
-  console.log("\nverifying role...\n");
   //If user is a recruiter (role_id == 1)
   if(req.body.auth.role_id == 1){
     next();
