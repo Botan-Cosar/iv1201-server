@@ -21,7 +21,7 @@ class DAO {
         process.env.DATABASE_URL, {
           dialect: 'postgres',
           protocol: 'postgres',
-          logging: env.LOG_SEQUALIZE ? "console.log" : false,
+          logging: process.env.LOG_SEQUALIZE === "true" ? console.log : false
       });
     }
     else{
@@ -29,8 +29,14 @@ class DAO {
           process.env.DB_NAME,
           process.env.DB_USER,
           process.env.DB_PASS,
-          {host: process.env.DB_HOST, dialect: process.env.DB_DIALECT,port:process.env.DB_PORT}
+          {
+            host: process.env.DB_HOST,
+            dialect: process.env.DB_DIALECT,
+            port:process.env.DB_PORT,
+            logging: process.env.LOG_SEQUALIZE === "true" ? console.log : false
+          }
       );
+      console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
     }
     Role.createModel(this.database);
     Person.createModel(this.database);
