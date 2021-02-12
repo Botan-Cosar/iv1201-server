@@ -73,7 +73,7 @@ class DAO {
       }
       return this.createPersonDto(personModel);
     } catch (err) {
-          throw "could not find person.";
+          throw new Error("could not find person.");
     }
   }
 
@@ -89,7 +89,7 @@ class DAO {
     try {
       return Person.create(person);
     } catch (error) {
-      throw "could not create person.";
+      throw new Error("could not create person.");
     }
   }
 
@@ -112,17 +112,45 @@ class DAO {
       };
       return this.createPersonDto(returnObject);
     } catch (error) {
-      throw "could not login.";
+      throw new Error("could not login.");
     }
   }
 
-  async saveCompetence(person_id,competence){
-    console.log(JSON.stringify({person_id,competence_id:competence[0],years_of_experience:competence[1]}));
+  async updateOrCreateCompetenceProfile(person_id,competence){
     try {
-      const competenceModel=await CompetenceProfile.create({person_id,competence_id:competence[0],years_of_experience:competence[1]});
-      console.log(competenceModel);
+      const competenceProfile={person_id,competence_id:competence[0],years_of_experience:competence[1]};
+      const updatedEntry=await this.updateCompetenceProfile(competenceProfile);
+      if(updatedEntry[0]===0){
+        await this.createCompetenceProfile(competenceProfile);
+      }
     } catch (error) {
-      throw "could not save competence.";
+      throw new Error("could not save competence profile.");
+    }
+  }
+
+  async updateCompetenceProfile({person_id,competence_id,years_of_experience}){
+    try {
+      const competenceModel=await CompetenceProfile.update({
+        years_of_experience
+      },{
+        where:{
+          person_id,
+          competence_id
+        }
+      });
+      return competenceModel;
+    } catch (error) {
+      throw new Error("could not update competence profile.");
+    }
+  }
+
+  async createCompetenceProfile(competenceProfile){
+    console.log(competenceProfile);
+    try {
+      const competenceModel=await CompetenceProfile.create(competenceProfile);
+      return competenceModel;
+    } catch (error) {
+      throw new Error("could not create competence profile.");
     }
   }
 

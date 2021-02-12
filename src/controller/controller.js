@@ -58,7 +58,7 @@ class Controller {
     //console.log(JSON.stringify(person_id));
     //console.log(JSON.stringify(competencies));
     //console.log(JSON.stringify(periods));
-    competencies.forEach(competence=>this.dao.saveCompetence(person_id,competence));
+    competencies.forEach(competence=>this.dao.updateOrCreateCompetenceProfile(person_id,competence));
     return "hej";
   }
 }
