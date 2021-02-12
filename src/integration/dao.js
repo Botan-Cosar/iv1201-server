@@ -124,6 +124,15 @@ class DAO {
     }
   }
 
+  /**
+   * Saves a competence
+   *
+   * @param {number} person_id ???
+   * @param {object} competence ???
+   * @return ??
+   *
+   * @throws Throws an "could not save competence." exception if failed to create competence.
+   */
   async saveCompetence(person_id,competence){
     console.log(JSON.stringify({person_id,competence_id:competence[0],years_of_experience:competence[1]}));
     try {

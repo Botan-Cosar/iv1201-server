@@ -19,6 +19,7 @@ class Controller {
    * Instantiates a new Controller object.
    *
    * @return {Controller} The newly created controller.
+   * @throws Throws and exception if connection to DB failed.
    */
   static async createController() {
     const contr = new Controller();

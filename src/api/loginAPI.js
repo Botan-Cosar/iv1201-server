@@ -42,6 +42,7 @@ class LoginApi extends RequestHandler {
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.
        *               404: Could not log in.
+       * @throws ???
        */
       this.router.post(
         '/',
@@ -53,9 +54,7 @@ class LoginApi extends RequestHandler {
               return;
             }
             jwt.sign({person: response}, process.env.JWT_SECRET, (err, token) => {
-              console.log("token: " + token);
               response.token = token;
-              console.log("\n" + JSON.stringify(response) + "\n");
               this.sendHttpResponse(res,200,response);
             })
           } catch (err) {

@@ -38,6 +38,7 @@ class PersonApi extends RequestHandler {
        * Saves a specified person in the database.
        * @return {obj} 200: Success object with the newly created person inside.
        *               404: If the specified person could not be saved.
+       * @throws ???
        */
       this.router.post(
         '/',
@@ -61,6 +62,7 @@ class PersonApi extends RequestHandler {
         * @param {int} id The id of the person that shall be returned.
         * @return {obj} 200: The searched person.
         *               404: If the specified person did not exist.
+        * @throws ???
         */
       this.router.get(
           '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
