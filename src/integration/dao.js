@@ -177,7 +177,7 @@ class DAO {
   }
 
   /**
-   * Updates a competence profile entry.
+   * Saves a competence profile entry.
    * 
    * @param {object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
    * @return {object} The newly created competence_profile.
