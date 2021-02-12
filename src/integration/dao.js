@@ -37,7 +37,6 @@ class DAO {
           }
       );
     }
-    this.database.options.logging = false;
     console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
 
     Role.createModel(this.database);
