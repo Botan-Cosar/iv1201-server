@@ -36,8 +36,10 @@ class DAO {
             logging: process.env.LOG_SEQUALIZE === "true" ? console.log : false
           }
       );
-      console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
     }
+    console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
+    console.log("value of LOG_SEQUALIZE: " + process.env.LOG_SEQUALIZE);
+
     Role.createModel(this.database);
     Person.createModel(this.database);
     Competence.createModel(this.database);
