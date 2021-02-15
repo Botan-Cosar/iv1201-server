@@ -36,6 +36,27 @@ class ApplicationApi extends RequestHandler {
       await this.retrieveController();
 
       /**
+        * Gets all applications.
+        *
+        * @return {obj} 200: The success object.
+        *               404: If the applications could not be retrieved.
+        * @throws ???
+        */
+      this.router.get('/', Authorizer.verifyToken, Authorizer.isRecruiter,
+        async (req,res,next)=>{
+          try {
+            const response=await this.contr.getApplications();
+            if(response===null){
+              this.sendHttpResponse(res,404,'Could not get applications');
+              return;
+            }
+            this.sendHttpResponse(res,200,response);
+          } catch (err) {
+            next(err);
+          }
+        })
+
+      /**
         * Handles application submissions.
         *
         * @return {obj} 200: The success object.

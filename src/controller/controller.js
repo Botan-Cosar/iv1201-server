@@ -80,5 +80,9 @@ class Controller {
       throw new Error("Failed to submit application.");
     }
   }
+
+  getApplications(){
+    return this.dao.findAllApplications();
+  }
 }
 module.exports = Controller;
