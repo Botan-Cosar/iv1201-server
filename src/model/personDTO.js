@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * A user of the chat application.
+ * A person from the database.
  */
 class PersonDTO {
   /**

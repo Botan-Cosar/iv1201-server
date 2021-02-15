@@ -63,15 +63,22 @@ class Controller {
   }
 
   /**
-   * Submits an application from the logged in user (MIGHT BE WRONG UPDATE COMMENT
-      (AND ADD PARAMS AND SO ON; CAPS))
+   * Submits an application from the logged in user.
+   * 
+   * @param {Object} object consists of username, competencies, and periods of work.
+   * @return {Object} success object.
+   * 
+   * @throws Throws an exception if failed to submit the application.
    */
-  submitApplication({person_id,competencies,periods}){
-    //console.log(JSON.stringify(person_id));
-    //console.log(JSON.stringify(competencies));
-    //console.log(JSON.stringify(periods));
-    competencies.forEach(competence=>this.dao.updateOrCreateCompetenceProfile(person_id,competence));
-    return "hej";
+  async submitApplication({username,competencies,periods}){
+    try {
+      const person_id=await this.dao.findPersonIdByUsername(username);
+      competencies.forEach(competence=>this.dao.updateOrCreateCompetenceProfile(person_id,competence));
+      periods.forEach(period=>this.dao.createAvailability(person_id,period));
+      return "success"
+    } catch (error) {
+      throw new Error("Failed to submit application.");
+    }
   }
 }
 module.exports = Controller;

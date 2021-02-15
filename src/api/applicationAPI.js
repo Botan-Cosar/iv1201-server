@@ -1,6 +1,7 @@
 'use strict';
 
 const RequestHandler = require('./requestHandler');
+const Authorizer = require('./authorization.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -34,11 +35,19 @@ class ApplicationApi extends RequestHandler {
     try {
       await this.retrieveController();
 
+      /**
+        * Handles application submissions.
+        *
+        * @return {obj} 200: The success object.
+        *               404: If the application could not be submitted.
+        * @throws ???
+        */
       this.router.post(
-        '/',
+        '/', Authorizer.verifyToken,
         async (req,res,next)=>{
           try {
-            const response=await this.contr.submitApplication(req.body);
+            const username=req.body.auth.username;
+            const response=await this.contr.submitApplication({username,...req.body});
             if(response===null){
               this.sendHttpResponse(res,404,'Could not submit application');
               return;

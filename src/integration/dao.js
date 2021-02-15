@@ -6,6 +6,7 @@ const Person = require('../model/person');
 const Role = require('../model/role');
 const CompetenceProfile=require('../model/competenceProfile');
 const Competence=require('../model/competence');
+const Availability=require('../model/availability');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -43,6 +44,7 @@ class DAO {
     Person.createModel(this.database);
     Competence.createModel(this.database);
     CompetenceProfile.createModel(this.database);
+    Availability.createModel(this.database);
   }
 
   /**
@@ -86,6 +88,30 @@ class DAO {
   }
 
   /**
+   * Searches for a person id with the specified username.
+   *
+   * @param {string} username The username of the searched person.
+   * @return {number} The person id with the specified username, or null if there was
+   *                  no such person.
+   * @throws Throws an exception if failed to search for the specified person.
+   */
+  async findPersonIdByUsername(username) {
+    try {
+      const personModel = await Person.findOne({
+        where:{
+          username,
+        }
+      });
+      if (personModel === null) {
+        return null;
+      }
+      return personModel.person_id;
+    } catch (err) {
+          throw new Error("could not find person.");
+    }
+  }
+
+  /**
    * Saves a specified person in the database.
    *
    * @param {Object} person The person to register.
@@ -117,7 +143,6 @@ class DAO {
           password:person.password
         }
       });
-      //console.log(personModel);
       if (personModel === null) {
         return null;
       }
@@ -136,7 +161,7 @@ class DAO {
    * Updates a competence profile if a matching person_id and competence_id already exists. Creates a new entry otherwise.
    *
    * @param {number} person_id The id of the person
-   * @param {object} competence A competence id along with years of experience.
+   * @param {Array} competence A competence id along with years of experience.
    *
    * @throws Throws a "could not save competence profile." exception if failed to create competence profile.
    */
@@ -155,8 +180,8 @@ class DAO {
   /**
    * Updates a competence profile entry.
    * 
-   * @param {object} object Consists of: person_id, competence_id, and years_of_experience
-   * @return {object} Array of updated entries.
+   * @param {Object} object Consists of: person_id, competence_id, and years_of_experience
+   * @return {Array} Array of updated entries.
    * 
    * @throws Throws a "could not update competence profile." error if the entry could not be updated. 
    */
@@ -179,18 +204,39 @@ class DAO {
   /**
    * Saves a competence profile entry.
    * 
-   * @param {object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
-   * @return {object} The newly created competence_profile.
+   * @param {Object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
+   * @return {Object} The newly created competence_profile.
    * 
    * @throws Throws a "could not create competence profile." error if the entry could not be created. 
    */
   async createCompetenceProfile(competenceProfile){
-    console.log(competenceProfile);
     try {
       const competenceModel=await CompetenceProfile.create(competenceProfile);
       return competenceModel;
     } catch (error) {
       throw new Error("could not create competence profile.");
+    }
+  }
+
+  /**
+   * Saves an availability entry.
+   * 
+   * @param {number} person_id The id of the person.
+   * @param {Array} period Consists of the start date and end date.
+   * @return {Object} The newly created availability.
+   * 
+   * @throws Throws a "could not create availability." error if failed to be created. 
+   */
+  async createAvailability(person_id,period){
+    try {
+      const availabilityModel=await Availability.create({
+        person_id,
+        from_date:period[0],
+        to_date:period[1]
+      });
+      return availabilityModel;
+    } catch (error) {
+      throw new Error("could not create availability.");
     }
   }
 

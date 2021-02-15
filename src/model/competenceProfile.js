@@ -5,21 +5,21 @@ const Person=require('./person');
 const Competence=require('./competence');
 
 /**
- * A Person.
+ * A CompetenceProfile.
  */
 class CompetenceProfile extends Sequelize.Model {
   /**
-   * The name of the Person model.
+   * The name of the CompetenceProfile model.
    */
   static get COMPETENCE_PROFILE_MODEL_NAME() {
     return 'competence_profile';
   }
 
   /**
-   * Defines the Person entity.
+   * Defines the CompetenceProfile entity.
    *
    * @param {Sequelize} sequelize The sequelize object.
-   * @return {Model} A sequelize model describing the Person entity.
+   * @return {Model} A sequelize model describing the CompetenceProfile entity.
    */
   static createModel(sequelize) {
     CompetenceProfile.init(

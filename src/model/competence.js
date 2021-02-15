@@ -3,21 +3,21 @@
 const Sequelize = require('sequelize');
 
 /**
- * A Person.
+ * A Competence.
  */
 class Competence extends Sequelize.Model {
   /**
-   * The name of the Person model.
+   * The name of the Competence model.
    */
   static get COMPETENCE_MODEL_NAME() {
     return 'competence';
   }
 
   /**
-   * Defines the Person entity.
+   * Defines the Competence entity.
    *
    * @param {Sequelize} sequelize The sequelize object.
-   * @return {Model} A sequelize model describing the Person entity.
+   * @return {Model} A sequelize model describing the Competence entity.
    */
   static createModel(sequelize) {
     Competence.init(
