@@ -240,6 +240,21 @@ class DAO {
     }
   }
 
+  /**
+   * Finds all applications.
+   * 
+   * @return {Object} All applications.
+   * 
+   * @throws Throws a "could not find all applications." error if failed to find all applications.
+   */
+  async findAllApplications(){
+    try {
+      return {"hej":"hej"};
+    } catch (error) {
+      throw new Error("could not find all applications.");
+    }
+  }
+
   createPersonDto(personModel) {
     return new PersonDTO(
         personModel.person_id,
