@@ -3,6 +3,7 @@
 const jwt = require("jsonwebtoken");
 
 const RequestHandler = require('./requestHandler');
+const Authorizer = require('./authorization.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -36,6 +37,19 @@ class LoginApi extends RequestHandler {
     try {
       await this.retrieveController();
 
+      this.router.get(
+        '/check_validity', Authorizer.verifyToken,
+        async (req,res,next)=>{
+          console.log("checking token validity...");
+          try {
+            let response = {body: req.body.auth};
+            this.sendHttpResponse(res, 200, response);
+          }
+          catch (err) {
+            next(err);
+          }
+        }
+      );
       /**
        * Logs in the user if login details match database
        *
