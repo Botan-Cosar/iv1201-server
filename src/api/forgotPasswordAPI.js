@@ -26,7 +26,7 @@ class ForgotPasswordApi extends RequestHandler {
    * @return {string} The URL paths handled by this request handler.
    */
   static get FORGOTPASSWORD_API_PATH() {
-    return '/forgotPassword';
+    return '/forgotpassword';
   }
 
   /**
@@ -54,7 +54,7 @@ class ForgotPasswordApi extends RequestHandler {
               console.log(req.protocol);
               let response = {}
               jwt.sign({email: email}, process.env.JWT_RESET_SECRET, {expiresIn: '30m'}, (err, token) => {
-                response.resetLink = "https://iv1201-g14.web.app/" + "setPassword?token=" + token;
+                response.resetLink = "https://iv1201-g14.web.app/" + "setpassword/" + token;
                 console.log(response);
                 this.sendHttpResponse(res,200,response);
               })

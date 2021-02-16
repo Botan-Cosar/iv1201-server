@@ -179,11 +179,11 @@ class DAO {
 
   /**
    * Updates a competence profile entry.
-   * 
+   *
    * @param {Object} object Consists of: person_id, competence_id, and years_of_experience
    * @return {Array} Array of updated entries.
-   * 
-   * @throws Throws a "could not update competence profile." error if the entry could not be updated. 
+   *
+   * @throws Throws a "could not update competence profile." error if the entry could not be updated.
    */
   async updateCompetenceProfile({person_id,competence_id,years_of_experience}){
     try {
@@ -203,11 +203,11 @@ class DAO {
 
   /**
    * Saves a competence profile entry.
-   * 
+   *
    * @param {Object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
    * @return {Object} The newly created competence_profile.
-   * 
-   * @throws Throws a "could not create competence profile." error if the entry could not be created. 
+   *
+   * @throws Throws a "could not create competence profile." error if the entry could not be created.
    */
   async createCompetenceProfile(competenceProfile){
     try {
@@ -220,12 +220,12 @@ class DAO {
 
   /**
    * Saves an availability entry.
-   * 
+   *
    * @param {number} person_id The id of the person.
    * @param {Array} period Consists of the start date and end date.
    * @return {Object} The newly created availability.
-   * 
-   * @throws Throws a "could not create availability." error if failed to be created. 
+   *
+   * @throws Throws a "could not create availability." error if failed to be created.
    */
   async createAvailability(person_id,period){
     try {
@@ -242,9 +242,9 @@ class DAO {
 
   /**
    * Finds all applications.
-   * 
+   *
    * @return {Object} All applications.
-   * 
+   *
    * @throws Throws a "could not find all applications." error if failed to find all applications.
    */
   async findAllApplications(){
@@ -253,6 +253,29 @@ class DAO {
     } catch (error) {
       throw new Error("could not find all applications.");
     }
+  }
+
+  /**
+   * Set password of person based on email.
+   * @param  {string} email The person's email
+   * @param  {string} password The new password to set.
+   *
+   * @throws Throws a "Could not set user password" error if failed to set password or find person.
+   */
+  async setPersonPassword(email, password){
+    try {
+      const personModel = await Person.update({
+        password: password,
+      },{
+        where:{
+          email: email,
+        }
+      });
+    } catch (error) {
+      console.error(error);
+      throw new Error("Could not set user password");
+    }
+
   }
 
   createPersonDto(personModel) {
