@@ -37,6 +37,14 @@ class LoginApi extends RequestHandler {
     try {
       await this.retrieveController();
 
+      /**
+       * Checks if the user's authorize header token is still valid.
+       *
+       * @return {obj} http response with code 200 including the user's
+       *               username, role, name and verification token.
+       *               403: invalid token error
+       * @throws ???
+       */
       this.router.get(
         '/check_validity', Authorizer.verifyToken,
         async (req,res,next)=>{
