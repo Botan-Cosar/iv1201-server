@@ -7,7 +7,7 @@ const Authorizer = require('./authorization.js');
 /**
  * Defines the REST API with endpoints related to persons.
  */
-class ForgotPasswordAPI extends RequestHandler {
+class ForgotPasswordApi extends RequestHandler {
   /**
    * Constructs a new instance.
    */
@@ -19,7 +19,7 @@ class ForgotPasswordAPI extends RequestHandler {
    * @return {string} The URL paths handled by this request handler.
    */
   get path() {
-    return ForgotPasswordAPI.FORGOTPASSWORD_API_PATH;
+    return ForgotPasswordApi.FORGOTPASSWORD_API_PATH;
   }
 
   /**
@@ -74,4 +74,4 @@ class ForgotPasswordAPI extends RequestHandler {
   }
 }
 
-module.exports = ForgotPasswordAPI;
+module.exports = ForgotPasswordApi;

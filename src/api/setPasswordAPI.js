@@ -7,7 +7,7 @@ const Authorizer = require('./authorization.js');
 /**
  * Defines the REST API with endpoints related to persons.
  */
-class SetPasswordAPI extends RequestHandler {
+class SetPasswordApi extends RequestHandler {
   /**
    * Constructs a new instance.
    */
@@ -80,4 +80,4 @@ class SetPasswordAPI extends RequestHandler {
   }
 }
 
-module.exports = SetPasswordAPI;
+module.exports = SetPasswordApi;
