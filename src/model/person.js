@@ -66,6 +66,9 @@ class Person extends Sequelize.Model {
     Person.belongsTo(Role,{
       foreignKey:'role_id',
     });
+    Role.hasMany(Person,{
+      foreignKey:'role_id',
+    });
     return Person;
   }
 }

@@ -27,10 +27,14 @@ class Competence extends Sequelize.Model {
             primaryKey:true,
             autoIncrement:true,
           },
-          name: {
+          name_se: {
             type: Sequelize.STRING,
             allowNull: false,
           },
+          name_en:{
+            type:Sequelize.STRING,
+            allowNull:false
+          }
         },
         {
           sequelize,
