@@ -91,6 +91,12 @@ class Controller {
     return this.dao.setPersonPassword(email, password);
   }
 
+  /**
+   * Returns all applications.
+   *
+   * @return {Object} success object.
+   * @throws Throws an exception if failed to retrieve all applications.
+   */
   getApplications(){
     return this.dao.findAllApplications();
   }

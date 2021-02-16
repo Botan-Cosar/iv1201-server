@@ -53,6 +53,9 @@ class Availability extends Sequelize.Model {
     Availability.belongsTo(Person,{
         foreignKey:'person_id',
     });
+    Person.hasMany(Availability,{
+      foreignKey:'person_id',
+    });
     return Availability;
   }
 }

@@ -71,13 +71,7 @@ class DAO {
    */
   async findPersonById(id) {
     try {
-      const personModel = await Person.findByPk(id,{
-        include:{
-          model:Role,
-          required:true
-        }
-      });
-      //console.log(JSON.stringify(personModel));
+      const personModel = await Person.findByPk(id);
       if (personModel === null) {
         return null;
       }
@@ -249,7 +243,25 @@ class DAO {
    */
   async findAllApplications(){
     try {
-      return {"hej":"hej"};
+      const applicationModel = await Availability.findAll({
+        attributes:["availability_id","from_date","to_date","createdAt","application_status"],
+        include:{
+          model:Person,
+          attributes:["name","surname"],
+          required:true,
+          include:{
+            model:CompetenceProfile,
+            attributes:["competence_id"],
+            required:true,
+            include:{
+              model:Competence,
+              attributes:["name_se","name_en"],
+              required:true
+            }
+          }
+        }
+      });
+      return applicationModel;
     } catch (error) {
       throw new Error("could not find all applications.");
     }

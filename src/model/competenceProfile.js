@@ -47,9 +47,17 @@ class CompetenceProfile extends Sequelize.Model {
     CompetenceProfile.belongsTo(Person,{
       foreignKey:'person_id',
     });
+    Person.hasMany(CompetenceProfile,{
+      foreignKey:'person_id',
+    });
+
     CompetenceProfile.belongsTo(Competence,{
       foreignKey:'competence_id',
     });
+    Competence.hasMany(CompetenceProfile,{
+      foreignKey:'competence_id',
+    });
+
     return CompetenceProfile;
   }
 }
