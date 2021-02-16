@@ -19,7 +19,7 @@ class SetPasswordApi extends RequestHandler {
    * @return {string} The URL paths handled by this request handler.
    */
   get path() {
-    return SetPasswordAPI.SETPASSWORD_API_PATH;
+    return SetPasswordApi.SETPASSWORD_API_PATH;
   }
 
   /**
