@@ -46,7 +46,6 @@ class Availability extends Sequelize.Model {
           modelName: Availability.AVAILABILITY_MODEL_NAME,
           paranoid: false,
           freezeTableName:true,
-          createdAt:false,
           updatedAt:false,
           deletedAt:false,
         }
