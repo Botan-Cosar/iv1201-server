@@ -64,10 +64,10 @@ class Controller {
 
   /**
    * Submits an application from the logged in user.
-   * 
+   *
    * @param {Object} object consists of username, competencies, and periods of work.
    * @return {Object} success object.
-   * 
+   *
    * @throws Throws an exception if failed to submit the application.
    */
   async submitApplication({username,competencies,periods}){
@@ -79,6 +79,16 @@ class Controller {
     } catch (error) {
       throw new Error("Failed to submit application.");
     }
+  }
+  /**
+   * Sets the password of a user based on email.
+   * @param {String} email The email of the user.
+   * @param {String} password The password to set.
+   *
+   * @throws Throws an exception if failed to set password.
+   */
+  setPersonPassword(email, password){
+    return this.dao.setPersonPassword(email, password);
   }
 
   /**
