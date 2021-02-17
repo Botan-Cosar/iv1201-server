@@ -251,7 +251,7 @@ class DAO {
           required:true,
           include:{
             model:CompetenceProfile,
-            attributes:["competence_id"],
+            attributes:["years_of_experience"],
             required:true,
             include:{
               model:Competence,
