@@ -38,7 +38,49 @@ function verifyToken(req, res, next){
     });
   }
   else{
-    return res.status(403).send("Unauthorized");
+    return res.status(403).send("Authorization header is missing or incorrectly formatted");
+  }
+}
+
+/**
+ * Middleware to verify if there is a valid token in the header. Either a normal access token,
+ * or a temporary "put" token used for updating the user's data like password or email when not logged in.
+ * @param {req} req The express Request object.
+ * @param {res} res The express Response object.
+ * @param {next} next The next function to execute.
+ */
+function verifyUpdatePerson(req, res, next){
+  const bearerHeader = req.headers["authorization"];
+  if(typeof bearerHeader !== "undefined"){
+    const token = bearerHeader.split(" ")[1];
+
+    let authData;
+
+    console.log("token: " + token);
+    jwt.verify(token, process.env.JWT_SECRET, (err, a1) => {
+      console.log("in first");
+      if(err){
+        jwt.verify(token, process.env.JWT_PUT_SECRET, (err2, a2) => {
+          console.log("in second");
+          console.log(a2);
+          if(err2){
+            return res.status(403).send("Unauthorized");
+          }
+          else{
+            req.body.auth = a2;
+            next();
+          }
+        });
+      }
+      else{
+        authData = a1;
+        req.body.auth = authData.person;
+        next();
+      }
+    });
+  }
+  else{
+    return res.status(403).send("Authorization header is missing or incorrectly formatted");
   }
 }
 
@@ -61,5 +103,6 @@ function isRecruiter(req, res, next){
 
 module.exports = {
   verifyToken: verifyToken,
+  verifyUpdatePerson: verifyUpdatePerson,
   isRecruiter: isRecruiter
 }

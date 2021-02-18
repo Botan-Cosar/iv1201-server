@@ -3,7 +3,7 @@
 const PersonApi = require('./personAPI');
 const LoginApi = require('./loginAPI');
 const ForgotPasswordApi = require('./forgotPasswordAPI');
-const SetPasswordApi = require('./setPasswordAPI');
+const UpdatePersonApi = require('./updatePersonAPI');
 const ApplicationApi = require('./applicationAPI');
 
 /**
@@ -44,7 +44,7 @@ const loader = new RequestHandlerLoader();
 loader.addRequestHandler(new PersonApi());
 loader.addRequestHandler(new LoginApi());
 loader.addRequestHandler(new ForgotPasswordApi());
-loader.addRequestHandler(new SetPasswordApi());
+loader.addRequestHandler(new UpdatePersonApi());
 loader.addRequestHandler(new ApplicationApi());
 
 module.exports = loader;

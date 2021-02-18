@@ -7,7 +7,7 @@ const Authorizer = require('./authorization.js');
 /**
  * Defines the REST API with endpoints related to persons.
  */
-class SetPasswordApi extends RequestHandler {
+class UpdatePersonApi extends RequestHandler {
   /**
    * Constructs a new instance.
    */
@@ -19,14 +19,14 @@ class SetPasswordApi extends RequestHandler {
    * @return {string} The URL paths handled by this request handler.
    */
   get path() {
-    return SetPasswordApi.SETPASSWORD_API_PATH;
+    return UpdatePersonApi.UPDATEPERSON_API_PATH;
   }
 
   /**
    * @return {string} The URL paths handled by this request handler.
    */
-  static get SETPASSWORD_API_PATH() {
-    return '/setpassword';
+  static get UPDATEPERSON_API_PATH() {
+    return '/updateperson';
   }
 
   /**
@@ -35,6 +35,25 @@ class SetPasswordApi extends RequestHandler {
   async registerHandler() {
     try {
       await this.retrieveController();
+
+      this.router.get(
+        '/', Authorizer.verifyUpdatePerson,
+        async (req, res, next) => {
+          try {
+            if(!req.body.auth){
+              return new Error("No authentication in GET request body");
+            }
+            let response = {};
+            await this.contr.personNeedsToFillEmptyFields(req.body.auth).then(e => {
+              response.emptyFields = e;
+              this.sendHttpResponse(res,200,response);
+            });
+          }
+          catch (err) {
+            next(err);
+          }
+        }
+    );
 
       /**
        * Sets the password of a user defined by email
@@ -50,7 +69,7 @@ class SetPasswordApi extends RequestHandler {
           let password = req.body.password;
           if(token){
             try {
-              jwt.verify(token, process.env.JWT_RESET_SECRET, (err, tokenData) => {
+              jwt.verify(token, process.env.JWT_PUT_SECRET, (err, tokenData) => {
                 if(err){
                   console.log("Invalid or expired link!");
                   return res.status(403).send("Invalid or expired link!");
@@ -83,4 +102,4 @@ class SetPasswordApi extends RequestHandler {
   }
 }
 
-module.exports = SetPasswordApi;
+module.exports = UpdatePersonApi;

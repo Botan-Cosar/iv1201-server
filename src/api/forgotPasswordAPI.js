@@ -53,8 +53,8 @@ class ForgotPasswordApi extends RequestHandler {
               console.log("reset password...");
               console.log(req.protocol);
               let response = {}
-              jwt.sign({email: email}, process.env.JWT_RESET_SECRET, {expiresIn: '30m'}, (err, token) => {
-                response.resetLink = "https://iv1201-g14.web.app/" + "setpassword/" + token;
+              jwt.sign({email: email}, process.env.JWT_PUT_SECRET, {expiresIn: '30m'}, (err, token) => {
+                response.resetLink = process.env.REACT_URL + "updateperson/" + token;
                 console.log(response);
                 this.sendHttpResponse(res,200,response);
               })

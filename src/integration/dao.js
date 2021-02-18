@@ -82,6 +82,54 @@ class DAO {
   }
 
   /**
+   * Searches for a person with the specified email.
+   *
+   * @param {string} email The email of the searched person.
+   * @return {number} The person dto with the specified email, or null if there was
+   *                  no such person.
+   * @throws Throws an exception if failed to search for the specified person.
+   */
+  async findPersonByEmail(email) {
+    try {
+      const personModel = await Person.findOne({
+        where:{
+          email,
+        }
+      });
+      if (personModel === null) {
+        return null;
+      }
+      return this.createPersonDto(personModel);
+    } catch (err) {
+          throw new Error("could not find person.");
+    }
+  }
+
+  /**
+   * Searches for a person with the specified username.
+   *
+   * @param {string} username The username of the searched person.
+   * @return {number} The person dto with the specified email, or null if there was
+   *                  no such person.
+   * @throws Throws an exception if failed to search for the specified person.
+   */
+  async findPersonByUsername(username) {
+    try {
+      const personModel = await Person.findOne({
+        where:{
+          username,
+        }
+      });
+      if (personModel === null) {
+        return null;
+      }
+      return this.createPersonDto(personModel);
+    } catch (err) {
+          throw new Error("could not find person.");
+    }
+  }
+
+  /**
    * Searches for a person id with the specified username.
    *
    * @param {string} username The username of the searched person.
@@ -105,6 +153,34 @@ class DAO {
     }
   }
 
+  async findPersonIdByAuth(auth){
+    try {
+      let personModel;
+      if(auth.username){
+        personModel = await Person.findOne({
+          where:{
+            username: auth.username,
+          }
+        });
+      }
+      else if(auth.email){
+        personModel = await Person.findOne({
+          where:{
+            email: auth.email,
+          }
+        });
+      }
+      if (personModel === null) {
+        return null;
+      }
+
+      return personModel.person_id;
+      }
+      catch (err) {
+            throw new Error("could not find person.");
+      }
+    }
+
   /**
    * Saves a specified person in the database.
    *
@@ -113,13 +189,34 @@ class DAO {
    *
    * @throws Throws an exception if failed to save the person.
    */
-  async savePerson(person){
-    try {
-      return Person.create(person);
-    } catch (error) {
-      throw new Error("could not create person.");
-    }
-  }
+   async savePerson(person){
+     try {
+       return Person.create(person);
+     } catch (error) {
+       throw new Error("could not create person.");
+     }
+   }
+
+
+
+   async updatePerson(person_id, person){
+     try {
+       return Person.update({
+         name: person.name,
+         surname: person.surname,
+         ssn: person.ssn,
+         email: person.email,
+         password: person.password,
+         username: person.username
+       },{
+         where: {
+           person_id
+         }
+       });
+     } catch (error) {
+       throw new Error("could not create person.");
+     }
+   }
 
   /**
    * Logs in the user

@@ -81,7 +81,12 @@ class LoginApi extends RequestHandler {
             }
             jwt.sign({person: response}, process.env.JWT_SECRET, (err, token) => {
               response.token = token;
-              this.sendHttpResponse(res,200,response);
+              this.contr.personNeedsToFillEmptyFields(response).then(e => {
+                if(e){
+                  response.emptyFields = e;
+                }
+                this.sendHttpResponse(res,200,response);
+              });
             })
           } catch (err) {
             next(err);

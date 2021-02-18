@@ -56,6 +56,31 @@ class PersonApi extends RequestHandler {
         }
       );
 
+      this.router.put(
+        '/', Authorizer.verifyUpdatePerson,
+        async (req,res,next)=>{
+          let auth = req.body.auth;
+          try {
+            let person_id;
+            await this.contr.findPersonIdByAuth(auth).then((e) => person_id = e);
+            if(!person_id){
+              console.log("person_id: " + person_id + " could not be found");
+              this.sendHttpResponse(res,404,'Could not find person');
+              return;
+            }
+            console.log("person_id: " + person_id);
+            console.log("body: ");
+            delete req.body.auth;
+            console.log(req.body);
+            const response=await this.contr.updatePerson(person_id, req.body);
+
+            this.sendHttpResponse(res,200,response);
+          } catch (err) {
+            next(err);
+          }
+        }
+      );
+
        /**
         * Returns the specified person.
         *

@@ -1,6 +1,7 @@
 'use strict';
 
 const DAO = require('../integration/dao');
+const HandleLackingData = require('../model/handleLackingData');
 const PersonDTO = require('../model/personDTO');
 
 /**
@@ -34,7 +35,7 @@ class Controller {
    * @return {PersonDTO} The person with the specified id, or null if there was no such person.
    * @throws Throws an exception if failed to search for the specified person.
    */
-  findPerson(id) {
+  findPersonById(id) {
     return this.dao.findPersonById(id);
   }
 
@@ -46,10 +47,58 @@ class Controller {
    *
    * @throws Throws an exception if failed to save the person.
    */
-  savePerson(person){
-    person={...person,role_id:2};
-    return this.dao.savePerson(person);
-  }
+   savePerson(person){
+     person={...person,role_id:2};
+     return this.dao.savePerson(person);
+   }
+
+   /**
+    * Searches for a person based on email
+    *
+    * @param {Object} email The email to use as query.
+    * @return {Object} The personDTO from database.
+    *
+    * @throws Throws an exception if failed to find person with email.
+    */
+   findPersonByEmail(email){
+    return this.dao.findPersonByEmail(email);
+   }
+
+   /**
+    * Searches for a person based on username
+    *
+    * @param {Object} username The username to use as query.
+    * @return {Object} The personDTO from database.
+    *
+    * @throws Throws an exception if failed to find person with username.
+    */
+   findPersonByUsername(username){
+    return this.dao.findPersonByUsername(username);
+   }
+
+   /**
+    * Searches for a person's ID by using the data from authentication
+    *
+    * @param {Object} auth The authentication data to use as query(ies).
+    * @return {Object} The personDTO from database.
+    *
+    * @throws Throws an exception if failed to find person with username.
+    */
+   findPersonIdByAuth(auth){
+     return this.dao.findPersonIdByAuth(auth);
+   }
+
+   /**
+    * Updates fields in database for person.
+    *
+    * @param {Object} person The person object including person_id.
+    * @return {Object} The personDTO from database.
+    *
+    * @throws Throws an exception if failed to find person with email.
+    */
+   updatePerson(person_id, person){
+     return this.dao.updatePerson(person_id, person);
+   }
   /**
    * Logs in the user
    *
@@ -84,6 +133,7 @@ class Controller {
    * Sets the password of a user based on email.
    * @param {String} email The email of the user.
    * @param {String} password The password to set.
+   * @return {Object} success object.
    *
    * @throws Throws an exception if failed to set password.
    */
@@ -99,6 +149,10 @@ class Controller {
    */
   getApplications(){
     return this.dao.findAllApplications();
+  }
+
+  async personNeedsToFillEmptyFields(obj){
+    return HandleLackingData.personNeedsToFillEmptyFields(obj, this);
   }
 }
 module.exports = Controller;
