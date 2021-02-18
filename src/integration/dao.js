@@ -135,7 +135,7 @@ class DAO {
    * @param {string} username The username of the searched person.
    * @return {number} The person id with the specified username, or null if there was
    *                  no such person.
-   * @throws Throws an exception if failed to search for the specified person.
+   * @throws Throws an exception if failed to find the specified person.
    */
   async findPersonIdByUsername(username) {
     try {
@@ -153,6 +153,13 @@ class DAO {
     }
   }
 
+  /**
+   * Finds a person by using the authentication data, which includes email, username and role_id.
+   * @param  {object} auth The authenticaiton object.
+   * @return {number} The ID of the user
+   *
+   * @throws Throws an exception if failed to find the specified person.
+   */
   async findPersonIdByAuth(auth){
     try {
       let personModel;
@@ -198,7 +205,14 @@ class DAO {
    }
 
 
-
+   /**
+    * Updates the user's data in the database.
+    * @param  {number}  person_id The unique (PK) id of the user.
+    * @param  {object}  person    The object including the data to update.
+    * @return {object}           Success object with the newly saved person inside.
+    *
+    * @throws Throws an exception if failed to update the person.
+    */
    async updatePerson(person_id, person){
      try {
        return Person.update({
@@ -389,9 +403,9 @@ class DAO {
 
   /**
    * Updates the application status of a specified availability.
-   * 
-   * @param {number} id The availability id. 
-   * 
+   *
+   * @param {number} id The availability id.
+   *
    * @throws Throws a "Could not update application" error if failed to update application.
    */
   async updateApplication({availability_id,application_status}){
@@ -413,6 +427,11 @@ class DAO {
     }
   }
 
+  /**
+   * Creates a person DTO
+   * @param  {object} personModel The model representing the person from the database.
+   * @return {object} The person DTO.
+   */
   createPersonDto(personModel) {
     return new PersonDTO(
         personModel.person_id,

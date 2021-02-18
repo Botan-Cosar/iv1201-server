@@ -63,7 +63,7 @@ class LoginApi extends RequestHandler {
     }
     try {
       /**
-       * Logs in the user if login details match database
+       * Logs in the user if login details match database.
        *
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.

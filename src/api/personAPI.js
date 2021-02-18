@@ -56,6 +56,12 @@ class PersonApi extends RequestHandler {
         }
       );
 
+      /**
+       * Updates the accessing user in the database.
+       * @return {obj} 200: Success object with the newly updated person inside.
+       *               404: If the specified person to update could not be found.
+       * @throws ???
+       */
       this.router.put(
         '/', Authorizer.verifyUpdatePerson,
         async (req,res,next)=>{
@@ -68,10 +74,7 @@ class PersonApi extends RequestHandler {
               this.sendHttpResponse(res,404,'Could not find person');
               return;
             }
-            console.log("person_id: " + person_id);
-            console.log("body: ");
             delete req.body.auth;
-            console.log(req.body);
             const response=await this.contr.updatePerson(person_id, req.body);
 
             this.sendHttpResponse(res,200,response);
