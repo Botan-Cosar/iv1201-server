@@ -100,5 +100,17 @@ class Controller {
   getApplications(){
     return this.dao.findAllApplications();
   }
+
+  /**
+   * Updates the application status of an availability.
+   * 
+   * @param {number} id The availability id.
+   * @return {Object} success object.
+   * 
+   * @throws Throws an exception if failed to update the application.
+   */
+  updateApplication(params){
+    return this.dao.updateApplication(params);
+  }
 }
 module.exports = Controller;
