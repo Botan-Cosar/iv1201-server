@@ -79,6 +79,29 @@ class ApplicationApi extends RequestHandler {
           }
         }
       );
+
+      /**
+        * Handles application acceptance and rejections.
+        *
+        * @return {obj} 200: The success object.
+        *               404: If the application could not be updated.
+        * @throws ???
+        */
+       this.router.put(
+        '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
+        async (req,res,next)=>{
+          try {
+            const response=await this.contr.updateApplication({application_status:req.body.application_status,availability_id:req.params.id});
+            if(response===null){
+              this.sendHttpResponse(res,404,'Could not update application');
+              return;
+            }
+            this.sendHttpResponse(res,200,response);
+          } catch (err) {
+            next(err);
+          }
+        }
+      );
     } catch (err) {
       console.error(err);
       //this.logger.logException(err);

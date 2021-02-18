@@ -151,8 +151,25 @@ class Controller {
     return this.dao.findAllApplications();
   }
 
+  /**
+   * Checks whether or not all fields of the user is in the database or not.
+   * @param  {object} obj The login object
+   * @return {object} The empty fields if any, otherwise returns false.
+   */
   async personNeedsToFillEmptyFields(obj){
     return HandleLackingData.personNeedsToFillEmptyFields(obj, this);
+  }
+
+  /**
+   * Updates the application status of an availability.
+   *
+   * @param {number} id The availability id.
+   * @return {Object} success object.
+   *
+   * @throws Throws an exception if failed to update the application.
+   */
+  updateApplication(params){
+    return this.dao.updateApplication(params);
   }
 }
 module.exports = Controller;

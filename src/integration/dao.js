@@ -387,6 +387,32 @@ class DAO {
 
   }
 
+  /**
+   * Updates the application status of a specified availability.
+   * 
+   * @param {number} id The availability id. 
+   * 
+   * @throws Throws a "Could not update application" error if failed to update application.
+   */
+  async updateApplication({availability_id,application_status}){
+    try {
+      const currentStatus=await Availability.findByPk(availability_id,{attributes:["application_status"]});
+      if(currentStatus.application_status){
+        throw new Error("Application has already been handled");
+      }
+      const availabilityModel=await Availability.update({
+        application_status
+      },{
+        where:{
+          availability_id
+        }
+      });
+      return availabilityModel;
+    } catch (error) {
+      throw new Error("Could not update application");
+    }
+  }
+
   createPersonDto(personModel) {
     return new PersonDTO(
         personModel.person_id,
