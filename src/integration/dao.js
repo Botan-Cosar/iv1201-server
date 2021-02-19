@@ -7,6 +7,7 @@ const Role = require('../model/role');
 const CompetenceProfile=require('../model/competenceProfile');
 const Competence=require('../model/competence');
 const Availability=require('../model/availability');
+const CompetenceTranslation=require('../model/competenceTranslation');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -44,6 +45,7 @@ class DAO {
     Person.createModel(this.database);
     Competence.createModel(this.database);
     CompetenceProfile.createModel(this.database);
+    CompetenceTranslation.createModel(this.database);
     Availability.createModel(this.database);
   }
 
@@ -366,14 +368,59 @@ class DAO {
             required:true,
             include:{
               model:Competence,
-              attributes:["name_se","name_en"],
-              required:true
+              required:true,
+              include:{
+                model:CompetenceTranslation,
+                required:true,
+                separate:true,
+                attributes:["language", "translation"],
+              },
             }
           }
         }
       });
+      // const applicationModel = await Availability.findAll({
+      //   attributes:["availability_id"],
+      //   include:{
+      //     model:Person,
+      //     attributes:["name"],
+      //     required:true,
+      //     include:{
+      //       model:CompetenceProfile,
+      //       attributes:["years_of_experience"],
+      //       required:true,
+      //       include:{
+      //         model:Competence,
+      //         attributes:["competence_id"],
+      //         required:true,
+      //         include:{
+      //           model:CompetenceTranslation,
+      //           separate:true,
+      //           attributes:["language", "translation"],
+      //         },
+      //       }
+      //     }
+      //   }
+      // });
+      // const applicationModel = await Person.findAll({
+      //   include:{
+      //     model:CompetenceProfile,
+      //     attributes:["years_of_experience"],
+      //     required:true,
+      //       include:{
+      //         model:Competence,
+      //         required:true,
+      //         include:{
+      //           model:CompetenceTranslation,
+      //           required:true,
+      //         },
+      //       }
+      //     }
+      // });
+      console.log(JSON.stringify(applicationModel));
       return applicationModel;
     } catch (error) {
+      console.error(error);
       throw new Error("could not find all applications.");
     }
   }
