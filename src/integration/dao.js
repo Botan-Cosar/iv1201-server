@@ -8,6 +8,7 @@ const CompetenceProfile=require('../model/competenceProfile');
 const Competence=require('../model/competence');
 const Availability=require('../model/availability');
 const CompetenceTranslation=require('../model/competenceTranslation');
+const Validators = require('../util/validators');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -73,6 +74,7 @@ class DAO {
    */
   async findPersonById(id) {
     try {
+      Validators.isPositiveInteger(id, 'id');
       const personModel = await Person.findByPk(id);
       if (personModel === null) {
         return null;
