@@ -1,5 +1,6 @@
-import { strict as assert } from 'assert';
+'use strict';
 
+const assert = require('assert').strict;
 
 class Validators {
   /**
