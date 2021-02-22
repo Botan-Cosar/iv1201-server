@@ -95,6 +95,7 @@ class DAO {
    */
   async findPersonByEmail(email) {
     try {
+      Validators.isEmailValid(email);
       const personModel = await Person.findOne({
         where:{
           email,
@@ -119,6 +120,8 @@ class DAO {
    */
   async findPersonByUsername(username) {
     try {
+      Validators.isStringNonZeroLength(username, 'username');
+      Validators.isAlphanumericString(username, 'username');
       const personModel = await Person.findOne({
         where:{
           username,
