@@ -56,13 +56,10 @@ function verifyUpdatePerson(req, res, next){
 
     let authData;
 
-    console.log("token: " + token);
+    //console.log("token: " + token);
     jwt.verify(token, process.env.JWT_SECRET, (err, a1) => {
-      console.log("in first");
       if(err){
         jwt.verify(token, process.env.JWT_PUT_SECRET, (err2, a2) => {
-          console.log("in second");
-          console.log(a2);
           if(err2){
             return res.status(403).send("Unauthorized");
           }

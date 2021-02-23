@@ -46,12 +46,13 @@ class Availability extends Sequelize.Model {
           modelName: Availability.AVAILABILITY_MODEL_NAME,
           paranoid: false,
           freezeTableName:true,
+          createdAt:true,
           updatedAt:false,
           deletedAt:false,
         }
     );
     Availability.belongsTo(Person,{
-        foreignKey:'person_id',
+      foreignKey:'person_id',
     });
     Person.hasMany(Availability,{
       foreignKey:'person_id',

@@ -59,8 +59,8 @@ class DAO {
     try {
         await this.database.authenticate();
         await this.database.sync({force: false});
-    } catch (err) {
-        throw new Error('Could not connect to database.');
+    } catch (error) {
+        throw new Error('Could not connect to database.' + error.message);
     }
   }
 
@@ -80,8 +80,8 @@ class DAO {
         return null;
       }
       return this.createPersonDto(personModel);
-    } catch (err) {
-          throw new Error("could not find person.");
+    } catch (error) {
+          throw new Error("could not find person." + error.message);
     }
   }
 
@@ -105,8 +105,8 @@ class DAO {
         return null;
       }
       return this.createPersonDto(personModel);
-    } catch (err) {
-          throw new Error("could not find person.");
+    } catch (error) {
+          throw new Error("could not find person." + error.message);
     }
   }
 
@@ -131,8 +131,8 @@ class DAO {
         return null;
       }
       return this.createPersonDto(personModel);
-    } catch (err) {
-          throw new Error("could not find person.");
+    } catch (error) {
+          throw new Error("could not find person." + error.message);
     }
   }
 
@@ -155,8 +155,8 @@ class DAO {
         return null;
       }
       return personModel.person_id;
-    } catch (err) {
-          throw new Error("could not find person.");
+    } catch (error) {
+          throw new Error("could not find person." + error.message);
     }
   }
 
@@ -190,8 +190,8 @@ class DAO {
 
       return personModel.person_id;
       }
-      catch (err) {
-            throw new Error("could not find person.");
+      catch (error) {
+            throw new Error("could not find person." + error.message);
       }
     }
 
@@ -207,7 +207,7 @@ class DAO {
      try {
        return Person.create(person);
      } catch (error) {
-       throw new Error("could not create person.");
+       throw new Error("could not create person." + error.message);
      }
    }
 
@@ -235,7 +235,7 @@ class DAO {
          }
        });
      } catch (error) {
-       throw new Error("could not create person.");
+       throw new Error("could not create person." + error.message);
      }
    }
 
@@ -265,7 +265,7 @@ class DAO {
       };
       return this.createPersonDto(returnObject);
     } catch (error) {
-      throw new Error("could not login.");
+      throw new Error("could not login." + error.message);
     }
   }
 
@@ -285,7 +285,7 @@ class DAO {
         await this.createCompetenceProfile(competenceProfile);
       }
     } catch (error) {
-      throw new Error("could not save competence profile.");
+      throw new Error("could not save competence profile." + error.message);
     }
   }
 
@@ -309,7 +309,7 @@ class DAO {
       });
       return competenceModel;
     } catch (error) {
-      throw new Error("could not update competence profile.");
+      throw new Error("could not update competence profile." + error.message);
     }
   }
 
@@ -326,7 +326,7 @@ class DAO {
       const competenceModel=await CompetenceProfile.create(competenceProfile);
       return competenceModel;
     } catch (error) {
-      throw new Error("could not create competence profile.");
+      throw new Error("could not create competence profile." + error.message);
     }
   }
 
@@ -348,7 +348,7 @@ class DAO {
       });
       return availabilityModel;
     } catch (error) {
-      throw new Error("could not create availability.");
+      throw new Error("could not create availability." + error.message);
     }
   }
 
@@ -384,49 +384,10 @@ class DAO {
           }
         }
       });
-      // const applicationModel = await Availability.findAll({
-      //   attributes:["availability_id"],
-      //   include:{
-      //     model:Person,
-      //     attributes:["name"],
-      //     required:true,
-      //     include:{
-      //       model:CompetenceProfile,
-      //       attributes:["years_of_experience"],
-      //       required:true,
-      //       include:{
-      //         model:Competence,
-      //         attributes:["competence_id"],
-      //         required:true,
-      //         include:{
-      //           model:CompetenceTranslation,
-      //           separate:true,
-      //           attributes:["language", "translation"],
-      //         },
-      //       }
-      //     }
-      //   }
-      // });
-      // const applicationModel = await Person.findAll({
-      //   include:{
-      //     model:CompetenceProfile,
-      //     attributes:["years_of_experience"],
-      //     required:true,
-      //       include:{
-      //         model:Competence,
-      //         required:true,
-      //         include:{
-      //           model:CompetenceTranslation,
-      //           required:true,
-      //         },
-      //       }
-      //     }
-      // });
       console.log(JSON.stringify(applicationModel));
       return applicationModel;
     } catch (error) {
-      console.error(error);
-      throw new Error("could not find all applications.");
+      throw new Error("could not find all applications." + error.message);
     }
   }
 
@@ -447,8 +408,7 @@ class DAO {
         }
       });
     } catch (error) {
-      console.error(error);
-      throw new Error("Could not set user password");
+      throw new Error("Could not set user password" + error.message);
     }
 
   }
@@ -464,7 +424,7 @@ class DAO {
     try {
       const currentStatus=await Availability.findByPk(availability_id,{attributes:["application_status"]});
       if(currentStatus.application_status){
-        throw new Error("Application has already been handled");
+        throw new Error("Application has already been handled. Status: " + currentStatus.application_status);
       }
       const availabilityModel=await Availability.update({
         application_status
@@ -475,7 +435,7 @@ class DAO {
       });
       return availabilityModel;
     } catch (error) {
-      throw new Error("Could not update application");
+      throw new Error("Could not update application" + error.message);
     }
   }
 
