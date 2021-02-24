@@ -1,5 +1,7 @@
 'use strict';
 
+const Validators = require('../util/validators');
+
 /**
  * A person from the database.
  */
@@ -17,6 +19,17 @@ class PersonDTO {
    * @param {string} username The username of the person.
    */
   constructor(person_id, name, surname, ssn, email, password, role_id, username) {
+    Validators.isPositiveInteger(person_id, 'person_id');
+    Validators.isStringNonZeroLength(name, 'name');
+    Validators.isAlphanumericString(name, 'name');
+    Validators.isStringNonZeroLength(surname, 'surname');
+    Validators.isAlphanumericString(surname, 'surname');
+    Validators.isStringNonZeroLength(ssn, 'ssn');
+    Validators.isEmailValid(email);
+    Validators.isStringNonZeroLength(password, 'password');
+    Validators.isPositiveInteger(role_id, 'role_id');
+    Validators.isStringNonZeroLength(username, 'username');
+    Validators.isAlphanumericString(username, 'username');
     this.person_id = person_id;
     this.name=name;
     this.surname=surname;

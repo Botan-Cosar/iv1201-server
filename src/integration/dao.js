@@ -146,6 +146,8 @@ class DAO {
    */
   async findPersonIdByUsername(username) {
     try {
+      Validators.isStringNonZeroLength(username, 'username');
+      Validators.isAlphanumericString(username, 'username');
       const personModel = await Person.findOne({
         where:{
           username,
@@ -222,6 +224,7 @@ class DAO {
     */
    async updatePerson(person_id, person){
      try {
+       Validators.isPositiveInteger(person_id, 'person_id');
        return Person.update({
          name: person.name,
          surname: person.surname,
@@ -279,6 +282,7 @@ class DAO {
    */
   async updateOrCreateCompetenceProfile(person_id,competence){
     try {
+      Validators.isPositiveInteger(person_id, 'person_id');
       const competenceProfile={person_id,competence_id:competence[0],years_of_experience:competence[1]};
       const updatedEntry=await this.updateCompetenceProfile(competenceProfile);
       if(updatedEntry[0]===0){
@@ -341,6 +345,7 @@ class DAO {
    */
   async createAvailability(person_id,period){
     try {
+      Validators.isPositiveInteger(person_id, 'person_id');
       const availabilityModel=await Availability.create({
         person_id,
         from_date:period[0],
@@ -400,6 +405,8 @@ class DAO {
    */
   async setPersonPassword(email, password){
     try {
+      Validators.isEmailValid(email);
+      Validators.isStringNonZeroLength(password, 'password');
       const personModel = await Person.update({
         password: password,
       },{
