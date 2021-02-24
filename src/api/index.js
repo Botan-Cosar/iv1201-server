@@ -5,6 +5,7 @@ const LoginApi = require('./loginAPI');
 const ForgotPasswordApi = require('./forgotPasswordAPI');
 const UpdatePersonApi = require('./updatePersonAPI');
 const ApplicationApi = require('./applicationAPI');
+const CompetenceApi = require('./CompetenceAPI');
 
 /**
  * Contains all request handlers.
@@ -46,5 +47,6 @@ loader.addRequestHandler(new LoginApi());
 loader.addRequestHandler(new ForgotPasswordApi());
 loader.addRequestHandler(new UpdatePersonApi());
 loader.addRequestHandler(new ApplicationApi());
+loader.addRequestHandler(new CompetenceApi());
 
 module.exports = loader;

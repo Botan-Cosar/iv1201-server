@@ -207,7 +207,7 @@ class DAO {
      try {
        return Person.create(person);
      } catch (error) {
-       throw new Error("could not create person." + error.message);
+       throw new Error("Could not create person." + error.message);
      }
    }
 
@@ -436,6 +436,23 @@ class DAO {
       return availabilityModel;
     } catch (error) {
       throw new Error("Could not update application" + error.message);
+    }
+  }
+
+  async getAllCompetences(){
+    try{
+      return await Competence.findAll({
+          required:true,
+          include:{
+            model:CompetenceTranslation,
+            required:true,
+            separate:true,
+            attributes:["language", "translation"],
+          }
+      });
+    }
+    catch(error){
+      throw new Error("Could not get competences" + error.message);
     }
   }
 
