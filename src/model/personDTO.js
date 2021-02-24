@@ -19,17 +19,17 @@ class PersonDTO {
    * @param {string} username The username of the person.
    */
   constructor(person_id, name, surname, ssn, email, password, role_id, username) {
-    Validators.isPositiveInteger(person_id, 'person_id');
-    Validators.isStringNonZeroLength(name, 'name');
-    Validators.isAlphanumericString(name, 'name');
-    Validators.isStringNonZeroLength(surname, 'surname');
-    Validators.isAlphanumericString(surname, 'surname');
-    Validators.isStringNonZeroLength(ssn, 'ssn');
-    Validators.isEmailValid(email);
-    Validators.isStringNonZeroLength(password, 'password');
-    Validators.isPositiveInteger(role_id, 'role_id');
-    Validators.isStringNonZeroLength(username, 'username');
-    Validators.isAlphanumericString(username, 'username');
+    person_id&&Validators.isNumber(person_id, 'person_id');
+    name&&Validators.isStringNonZeroLength(name, 'name');
+    name&&Validators.isAlphanumericString(name, 'name');
+    surname&&Validators.isStringNonZeroLength(surname, 'surname');
+    surname&&Validators.isAlphanumericString(surname, 'surname');
+    ssn&&Validators.isStringNonZeroLength(ssn, 'ssn');
+    email&&Validators.isEmailValid(email);
+    password&&Validators.isStringNonZeroLength(password, 'password');
+    role_id&&Validators.isNumber(role_id, 'role_id');
+    username&&Validators.isStringNonZeroLength(username, 'username');
+    username&&Validators.isAlphanumericString(username, 'username');
     this.person_id = person_id;
     this.name=name;
     this.surname=surname;

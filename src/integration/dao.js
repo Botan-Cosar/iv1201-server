@@ -266,6 +266,7 @@ class DAO {
         email: personModel.email,
         role_id: personModel.role_id
       };
+      console.log(returnObject);
       return this.createPersonDto(returnObject);
     } catch (error) {
       throw new Error("could not login." + error.message);
