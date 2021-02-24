@@ -35,7 +35,7 @@ class Controller {
    * @return {PersonDTO} The person with the specified id, or null if there was no such person.
    * @throws Throws an exception if failed to search for the specified person.
    */
-  findPersonById(id) {
+  async findPersonById(id) {
     return this.dao.findPersonById(id);
   }
 
@@ -47,7 +47,7 @@ class Controller {
    *
    * @throws Throws an exception if failed to save the person.
    */
-   savePerson(person){
+   async savePerson(person){
      person={...person,role_id:2};
      return this.dao.savePerson(person);
    }
@@ -60,7 +60,7 @@ class Controller {
     *
     * @throws Throws an exception if failed to find person with email.
     */
-   findPersonByEmail(email){
+   async findPersonByEmail(email){
     return this.dao.findPersonByEmail(email);
    }
 
@@ -72,7 +72,7 @@ class Controller {
     *
     * @throws Throws an exception if failed to find person with username.
     */
-   findPersonByUsername(username){
+   async findPersonByUsername(username){
     return this.dao.findPersonByUsername(username);
    }
 
@@ -84,7 +84,7 @@ class Controller {
     *
     * @throws Throws an exception if failed to find person with username.
     */
-   findPersonIdByAuth(auth){
+   async findPersonIdByAuth(auth){
      return this.dao.findPersonIdByAuth(auth);
    }
 
@@ -96,7 +96,7 @@ class Controller {
     *
     * @throws Throws an exception if failed to find person with email.
     */
-   updatePerson(person_id, person){
+   async updatePerson(person_id, person){
      return this.dao.updatePerson(person_id, person);
    }
   /**
@@ -107,7 +107,7 @@ class Controller {
    *
    * @throws Throws an exception if failed to log in.
    */
-  login(person){
+  async login(person){
     return this.dao.login(person);
   }
 
@@ -137,7 +137,7 @@ class Controller {
    *
    * @throws Throws an exception if failed to set password.
    */
-  setPersonPassword(email, password){
+  async setPersonPassword(email, password){
     return this.dao.setPersonPassword(email, password);
   }
 
@@ -147,7 +147,7 @@ class Controller {
    * @return {Object} success object.
    * @throws Throws an exception if failed to retrieve all applications.
    */
-  getApplications(){
+  async getApplications(){
     return this.dao.findAllApplications();
   }
 
@@ -168,8 +168,18 @@ class Controller {
    *
    * @throws Throws an exception if failed to update the application.
    */
-  updateApplication(params){
+  async updateApplication(params){
     return this.dao.updateApplication(params);
+  }
+
+  /**
+   * Gets all the competences from the database.
+   * @return {Object} success object
+   *
+   * @throws Throws an exception if failed to get competences.
+   */
+  async getAllCompetences(){
+    return this.dao.getAllCompetences();
   }
 }
 module.exports = Controller;
