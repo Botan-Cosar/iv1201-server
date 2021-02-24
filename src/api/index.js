@@ -5,7 +5,7 @@ const LoginApi = require('./loginAPI');
 const ForgotPasswordApi = require('./forgotPasswordAPI');
 const UpdatePersonApi = require('./updatePersonAPI');
 const ApplicationApi = require('./applicationAPI');
-const CompetenceApi = require('./CompetenceAPI');
+const CompetenceApi = require('./competenceAPI');
 
 /**
  * Contains all request handlers.
