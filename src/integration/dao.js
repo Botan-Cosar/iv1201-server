@@ -284,7 +284,8 @@ class DAO {
   async updateOrCreateCompetenceProfile(person_id,competence){
     try {
       Validators.isPositiveInteger(person_id, 'person_id');
-      const competenceProfile={person_id,competence_id:competence[0],years_of_experience:competence[1]};
+      const {competence_id,years_of_experience}=competence;
+      const competenceProfile={person_id,competence_id,years_of_experience};
       const updatedEntry=await this.updateCompetenceProfile(competenceProfile);
       if(updatedEntry[0]===0){
         await this.createCompetenceProfile(competenceProfile);
@@ -347,10 +348,11 @@ class DAO {
   async createAvailability(person_id,period){
     try {
       Validators.isPositiveInteger(person_id, 'person_id');
+      const {from_date,to_date}=period;
       const availabilityModel=await Availability.create({
         person_id,
-        from_date:period[0],
-        to_date:period[1]
+        from_date,
+        to_date
       });
       return availabilityModel;
     } catch (error) {
