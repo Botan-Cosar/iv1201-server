@@ -52,12 +52,18 @@ class ForgotPasswordApi extends RequestHandler {
             try {
               console.log("reset password...");
               console.log(req.protocol);
-              let response = {}
-              jwt.sign({email: email}, process.env.JWT_PUT_SECRET, {expiresIn: '30m'}, (err, token) => {
-                response.resetLink = process.env.REACT_URL + "updateperson/" + token;
-                console.log(response);
-                this.sendHttpResponse(res,200,response);
-              })
+              const person = await this.contr.findPersonByEmail(email);
+              if(person != null){
+                let response = {}
+                jwt.sign({email: email}, process.env.JWT_PUT_SECRET, {expiresIn: '30m'}, (err, token) => {
+                  response.resetLink = process.env.REACT_URL + "updateperson/" + token;
+                  console.log(response);
+                  this.sendHttpResponse(res,200,response);
+                })
+              }
+              else{
+                this.sendHttpResponse(res, 404, 'An account with that email was not found');
+              }
             }
             catch (err) {
               next(err);
