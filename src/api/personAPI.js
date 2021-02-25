@@ -44,12 +44,24 @@ class PersonApi extends RequestHandler {
         '/',
         async (req,res,next)=>{
           try {
-            const response=await this.contr.savePerson(req.body);
-            if(response===null){
-              this.sendHttpResponse(res,404,'Could not save person');
-              return;
+            //Check if unique fields are unique.
+            const usernameTaken = await this.contr.findPersonByUsername(req.body.username);
+            const emailTaken = await this.contr.findPersonByEmail(req.body.email);
+
+            if(usernameTaken == null && emailTaken == null){
+              const response=await this.contr.savePerson(req.body);
+              if(response===null){
+                this.sendHttpResponse(res,404,'Could not save person');
+                return;
+              }
+              this.sendHttpResponse(res,200,response);
             }
-            this.sendHttpResponse(res,200,response);
+            else{
+              if(usernameTaken)
+                this.sendHttpResponse(res,406,'Could not create account, not unique username');
+              else if(emailTaken)
+                this.sendHttpResponse(res,406,'Could not create account, not unique email');
+            }
           } catch (err) {
             next(err);
           }
