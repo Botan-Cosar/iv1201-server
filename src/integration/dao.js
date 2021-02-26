@@ -352,7 +352,8 @@ class DAO {
       const availabilityModel=await Availability.create({
         person_id,
         from_date,
-        to_date
+        to_date,
+        version_number:0
       });
       return availabilityModel;
     } catch (error) {
@@ -370,7 +371,7 @@ class DAO {
   async findAllApplications(){
     try {
       const applicationModel = await Availability.findAll({
-        attributes:["availability_id","from_date","to_date","createdAt","application_status"],
+        attributes:["availability_id","from_date","to_date","createdAt","application_status","version_number"],
         include:{
           model:Person,
           attributes:["name","surname"],
@@ -430,14 +431,15 @@ class DAO {
    *
    * @throws Throws a "Could not update application" error if failed to update application.
    */
-  async updateApplication({availability_id,application_status}){
+  async updateApplication({availability_id,application_status,version_number}){
     try {
-      const currentStatus=await Availability.findByPk(availability_id,{attributes:["application_status"]});
-      if(currentStatus.application_status){
-        throw new Error("Application has already been handled. Status: " + currentStatus.application_status);
+      const currentVersion=await Availability.findByPk(availability_id,{attributes:["version_number"]});
+      if(currentVersion.version_number!=version_number){
+        throw new Error("Version number expired. Current version: " + currentVersion.version_number);
       }
       const availabilityModel=await Availability.update({
-        application_status
+        application_status,
+        version_number:version_number+1
       },{
         where:{
           availability_id
