@@ -437,9 +437,10 @@ class DAO {
       if(currentVersion.version_number!=version_number){
         throw new Error("Version number expired. Current version: " + currentVersion.version_number);
       }
+      const nextVersionNumber=+version_number++;
       const availabilityModel=await Availability.update({
         application_status,
-        version_number:version_number+1
+        version_number:nextVersionNumber
       },{
         where:{
           availability_id
