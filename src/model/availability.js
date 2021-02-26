@@ -39,6 +39,10 @@ class Availability extends Sequelize.Model {
           application_status:{
             type:Sequelize.STRING,
             allowNull:true
+          },
+          version_number:{
+            type:Sequelize.BIGINT,
+            allowNull:false
           }
         },
         {
