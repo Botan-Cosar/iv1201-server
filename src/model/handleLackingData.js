@@ -20,8 +20,8 @@ class HandleLackingData {
       }
     }
     if(Object.keys(emptyFields).length > 0){
-      console.log("EMPTY FIELDS: ");
-      console.log(emptyFields);
+      // console.log("EMPTY FIELDS: ");
+      // console.log(emptyFields);
       return emptyFields;
     }
     return false;
