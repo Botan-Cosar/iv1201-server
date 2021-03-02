@@ -32,7 +32,7 @@ The util folder contains validation and tests.
 
 Classes use PascalCase. All other names like: Folders, Filenames, Functions and Variables use camelCase. 
 
-## GitHub Actions
+## CI/CD Pipeline
 
 This repository is set up with heroku's CI/CD pipeline that deploys to [this](https://dashboard.heroku.com/apps/iv1201-rest-server) heroku project.
 
