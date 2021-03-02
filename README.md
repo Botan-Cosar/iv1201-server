@@ -28,7 +28,7 @@ The api layer contains the functionality for handeling logic and requests from t
 The controller is used to keep the architecture consistent and easier to develop by keeping things like coupling and dependencies low.
 The integration layer contains the dao which is the last thing before the database call. Its from here all the communication to the database occurs.
 Lastly the model contains definitions for models in the database, as well as DTOs used in the REST server.
-The util folder contains validation and tests.
+The util folder contains validation, logging and tests.
 
 Classes use PascalCase. All other names like: Folders, Filenames, Functions and Variables use camelCase. 
 
