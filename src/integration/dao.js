@@ -274,90 +274,50 @@ class DAO {
   }
 
   /**
-   * Updates a competence profile if a matching person_id and competence_id already exists. Creates a new entry otherwise.
+   * Submits an application from the logged in user.
    *
-   * @param {number} person_id The id of the person
-   * @param {Array} competence A competence id along with years of experience.
+   * @param {Object} object consists of username, competencies, and periods of work.
+   * @return {Object} success object.
    *
-   * @throws Throws a "could not save competence profile." exception if failed to create competence profile.
+   * @throws Throws an exception if failed to submit the application.
    */
-  async updateOrCreateCompetenceProfile(person_id,competence){
+  async submitApplication({username,competencies,periods}){
+    const t=await this.database.transaction({autocommit:false});
     try {
-      Validators.isPositiveInteger(person_id, 'person_id');
-      const {competence_id,years_of_experience}=competence;
-      const competenceProfile={person_id,competence_id,years_of_experience};
-      const updatedEntry=await this.updateCompetenceProfile(competenceProfile);
-      if(updatedEntry[0]===0){
-        await this.createCompetenceProfile(competenceProfile);
-      }
-    } catch (error) {
-      throw new Error("could not save competence profile." + error.message);
-    }
-  }
+      const person_id=await this.findPersonIdByUsername(username);
 
-  /**
-   * Updates a competence profile entry.
-   *
-   * @param {Object} object Consists of: person_id, competence_id, and years_of_experience
-   * @return {Array} Array of updated entries.
-   *
-   * @throws Throws a "could not update competence profile." error if the entry could not be updated.
-   */
-  async updateCompetenceProfile({person_id,competence_id,years_of_experience}){
-    try {
-      const competenceModel=await CompetenceProfile.update({
-        years_of_experience
-      },{
-        where:{
-          person_id,
-          competence_id
-        }
+      const competenceProfiles=competencies.map(c=>{
+        return {person_id,...c};
       });
-      return competenceModel;
-    } catch (error) {
-      throw new Error("could not update competence profile." + error.message);
-    }
-  }
-
-  /**
-   * Saves a competence profile entry.
-   *
-   * @param {Object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
-   * @return {Object} The newly created competence_profile.
-   *
-   * @throws Throws a "could not create competence profile." error if the entry could not be created.
-   */
-  async createCompetenceProfile(competenceProfile){
-    try {
-      const competenceModel=await CompetenceProfile.create(competenceProfile);
-      return competenceModel;
-    } catch (error) {
-      throw new Error("could not create competence profile." + error.message);
-    }
-  }
-
-  /**
-   * Saves an availability entry.
-   *
-   * @param {number} person_id The id of the person.
-   * @param {Array} period Consists of the start date and end date.
-   * @return {Object} The newly created availability.
-   *
-   * @throws Throws a "could not create availability." error if failed to be created.
-   */
-  async createAvailability(person_id,period){
-    try {
-      Validators.isPositiveInteger(person_id, 'person_id');
-      const {from_date,to_date}=period;
-      const availabilityModel=await Availability.create({
-        person_id,
-        from_date,
-        to_date,
-        version_number:0
+      const availabilities=periods.map(p=>{
+        return {person_id,...p};
       });
-      return availabilityModel;
+
+      await CompetenceProfile.bulkCreate(competenceProfiles,{
+        ignoreDuplicates:true,
+        transaction:t
+      });
+
+      competenceProfiles.map(async profile=>{
+        const {person_id,competence_id,years_of_experience}=profile;
+        const updatedEntry=await CompetenceProfile.update({
+          years_of_experience
+        },{
+          where:{
+            person_id,
+            competence_id
+          },
+          transaction:t
+        });
+        return updatedEntry;
+      })
+      
+      await Availability.bulkCreate(availabilities,{transaction:t});
+      t.commit();
+      return "success";
     } catch (error) {
-      throw new Error("could not create availability." + error.message);
+      t.rollback();
+      throw new Error("Failed to submit application." + error.message);
     }
   }
 
@@ -427,7 +387,9 @@ class DAO {
   /**
    * Updates the application status of a specified availability.
    *
-   * @param {number} id The availability id.
+   * @param {number} availability_id The availability id.
+   * @param {String} application_status The new status for the application.
+   * @param {number} version_number The version number for the status field.
    *
    * @throws Throws a "Could not update application" error if failed to update application.
    */
