@@ -290,7 +290,7 @@ class DAO {
         return {person_id,...c};
       });
       const availabilities=periods.map(p=>{
-        return {person_id,...p};
+        return {person_id,...p,version_number:0};
       });
 
       await CompetenceProfile.bulkCreate(competenceProfiles,{
