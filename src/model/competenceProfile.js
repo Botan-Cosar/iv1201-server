@@ -42,10 +42,10 @@ class CompetenceProfile extends Sequelize.Model {
           createdAt:false,
           updatedAt:false,
           deletedAt:false,
-          indexes:[{
+          /*indexes:[{
               unique: true,
               fields: ['person_id', 'competence_id']
-          }]
+          }]*/
         }
     );
     CompetenceProfile.belongsTo(Person,{
