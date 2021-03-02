@@ -339,7 +339,7 @@ class DAO {
           include:{
             model:CompetenceProfile,
             attributes:["years_of_experience"],
-            required:true,
+            required:false,
             include:{
               model:Competence,
               required:true,
