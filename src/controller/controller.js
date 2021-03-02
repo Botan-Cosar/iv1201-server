@@ -122,7 +122,8 @@ class Controller {
   async submitApplication({username,competencies,periods}){
     try {
       const person_id=await this.dao.findPersonIdByUsername(username);
-      competencies.forEach(competence=>this.dao.updateOrCreateCompetenceProfile(person_id,competence));
+      if(competencies)
+        competencies.forEach(competence=>this.dao.updateOrCreateCompetenceProfile(person_id,competence));
       periods.forEach(period=>this.dao.createAvailability(person_id,period));
       return "success"
     } catch (error) {
