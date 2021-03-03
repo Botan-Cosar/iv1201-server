@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
+const Logger = require('./../util/logger.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -73,6 +74,7 @@ class LoginApi extends RequestHandler {
       this.router.post(
         '/',
         async (req,res,next)=>{
+          Logger.logMessage("Login attempt failed for username: \"" + req.body.username + "\"");
           try {
             const response=await this.contr.login(req.body);
             if(response===null){
@@ -89,13 +91,12 @@ class LoginApi extends RequestHandler {
               });
             })
           } catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         }
       );
     } catch (err) {
-      console.error(err);
-      //this.logger.logException(err);
+      Logger.logError(err);
     }
   }
 }

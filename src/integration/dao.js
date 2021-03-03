@@ -13,6 +13,7 @@ const Availability=require('../model/availability');
 const CompetenceTranslationDTO=require('../model/competenceTranslationDTO');
 const CompetenceTranslation=require('../model/competenceTranslation');
 const Validators = require('../util/validators');
+const Logger = require('./../util/logger.js');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -44,7 +45,7 @@ class DAO {
           }
       );
     }
-    console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
+    Logger.logMessage("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
 
     Role.createModel(this.database);
     Person.createModel(this.database);
@@ -317,9 +318,10 @@ class DAO {
         });
         return updatedEntry;
       })
-      
+
       await Availability.bulkCreate(availabilities,{transaction:t});
       t.commit();
+      Logger.logMessage("Application submitted successfully for user: \"" + username + "\"");
       return "success";
     } catch (error) {
       t.rollback();

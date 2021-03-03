@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
+const Logger = require('./../util/logger.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -50,54 +51,12 @@ class UpdatePersonApi extends RequestHandler {
             });
           }
           catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         }
     );
-
-      /**
-       * Sets the password of a user defined by email
-       *
-       * @return {obj} http response with code 200 for a sucessful password change.
-       *                                       500 for internal server error. Something went wrong.
-       * @throws ???
-       */
-      this.router.post(
-        '/',
-        async (req,res,next)=>{
-          let token = req.body.token;
-          let password = req.body.password;
-          if(token){
-            try {
-              jwt.verify(token, process.env.JWT_PUT_SECRET, (err, tokenData) => {
-                if(err){
-                  console.log("Invalid or expired link!");
-                  return res.status(403).send("Invalid or expired link!");
-                }
-                else{
-                  if(this.contr.setPersonPassword(tokenData.email, password)){
-                    let response = {}
-                    console.log("New password for " + tokenData.email + " was set.");
-                    this.sendHttpResponse(res,200,response);
-                  }
-                  else{
-                    this.sendHttpResponse(res,500,response);
-                  }
-                  next();
-                }
-              });
-            }
-            catch (err) {
-              next(err);
-            }
-          }
-          else{
-            throw new Error("Invalid or expired link!");
-          }
-        }
-      );
     } catch (err) {
-      console.error(err);
+      Logger.logError(err);
     }
   }
 }
