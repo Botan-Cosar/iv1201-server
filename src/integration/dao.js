@@ -9,6 +9,7 @@ const Competence=require('../model/competence');
 const Availability=require('../model/availability');
 const CompetenceTranslation=require('../model/competenceTranslation');
 const Validators = require('../util/validators');
+const Logger = require('./../util/logger.js');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -312,7 +313,7 @@ class DAO {
         });
         return updatedEntry;
       })
-      
+
       await Availability.bulkCreate(availabilities,{transaction:t});
       t.commit();
       return "success";
