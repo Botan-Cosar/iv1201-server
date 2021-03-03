@@ -41,7 +41,7 @@ class DAO {
           }
       );
     }
-    console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
+    Logger.logMessage("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
 
     Role.createModel(this.database);
     Person.createModel(this.database);
@@ -316,6 +316,7 @@ class DAO {
 
       await Availability.bulkCreate(availabilities,{transaction:t});
       t.commit();
+      Logger.logMessage("Application submitted successfully for user: \"" + username + "\"");
       return "success";
     } catch (error) {
       t.rollback();

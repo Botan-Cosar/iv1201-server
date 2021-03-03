@@ -2,6 +2,8 @@
 
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
+const Logger = require('./../util/logger.js');
+
 
 /**
  * Defines the REST API with endpoints related to competences (job positions).
@@ -49,18 +51,19 @@ class CompetenceAPI extends RequestHandler {
             try {
               const competenceList = await this.contr.getAllCompetences();
               if (competenceList === null) {
+                Logger.logError(new Error("No competences found in database."));
                 this.sendHttpResponse(res, 404, 'No competences found');
                 return;
               }
 
               this.sendHttpResponse(res, 200, competenceList);
             } catch (err) {
-              next(err);
+              Logger.logError(err);
             }
           }
       );
     } catch (err) {
-      console.error(err);
+        Logger.logError(err);
     }
   }
 }

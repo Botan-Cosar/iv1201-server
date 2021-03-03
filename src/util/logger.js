@@ -6,7 +6,7 @@ class Logger {
    * @param  {[type]} msg The message to log
    */
   static logMessage(msg) {
-    console.log(msg);
+    console.log("\t[LOG] " + msg);
   }
 
   /**
