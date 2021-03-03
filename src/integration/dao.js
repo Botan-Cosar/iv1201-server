@@ -4,9 +4,13 @@ const Sequelize = require('sequelize');
 const PersonDTO = require('../model/personDTO');
 const Person = require('../model/person');
 const Role = require('../model/role');
+const CompetenceProfileDTO=require('../model/competenceProfileDTO');
 const CompetenceProfile=require('../model/competenceProfile');
+const CompetenceDTO = require('../model/competenceDTO');
 const Competence=require('../model/competence');
+const ApplicationDTO=require('../model/applicationDTO');
 const Availability=require('../model/availability');
+const CompetenceTranslationDTO=require('../model/competenceTranslationDTO');
 const CompetenceTranslation=require('../model/competenceTranslation');
 const Validators = require('../util/validators');
 
@@ -208,7 +212,8 @@ class DAO {
    async savePerson(person){
      try {
       person={...person,role_id:2};
-      return Person.create(person);
+      await Person.create(person);
+      return "success";
     } catch (error) {
       throw new Error("Could not create person." + error.message);
     }
@@ -226,7 +231,7 @@ class DAO {
    async updatePerson(person_id, person){
      try {
        Validators.isPositiveInteger(person_id, 'person_id');
-       return Person.update({
+       await Person.update({
          name: person.name,
          surname: person.surname,
          ssn: person.ssn,
@@ -238,6 +243,7 @@ class DAO {
            person_id
          }
        });
+       return "success";
      } catch (error) {
        throw new Error("could not create person." + error.message);
      }
@@ -267,7 +273,6 @@ class DAO {
         email: personModel.email,
         role_id: personModel.role_id
       };
-      console.log(returnObject);
       return this.createPersonDto(returnObject);
     } catch (error) {
       throw new Error("could not login." + error.message);
@@ -331,7 +336,7 @@ class DAO {
    */
   async findAllApplications(){
     try {
-      const applicationModel = await Availability.findAll({
+      const applicationArrayModel = await Availability.findAll({
         attributes:["availability_id","from_date","to_date","createdAt","application_status","version_number"],
         include:{
           model:Person,
@@ -354,8 +359,7 @@ class DAO {
           }
         }
       });
-      console.log(JSON.stringify(applicationModel));
-      return applicationModel;
+      return this.createApplicationArray(applicationArrayModel);
     } catch (error) {
       throw new Error("could not find all applications." + error.message);
     }
@@ -372,7 +376,7 @@ class DAO {
     try {
       Validators.isEmailValid(email);
       Validators.isStringNonZeroLength(password, 'password');
-      const personModel = await Person.update({
+      await Person.update({
         password: password,
       },{
         where:{
@@ -401,7 +405,7 @@ class DAO {
         throw new Error("Version number expired. Current version: " + currentVersion.version_number);
       }
       const nextVersionNumber=+version_number+1;
-      const availabilityModel=await Availability.update({
+      await Availability.update({
         application_status,
         version_number:nextVersionNumber
       },{
@@ -409,7 +413,7 @@ class DAO {
           availability_id
         }
       });
-      return availabilityModel;
+      return "success";
     } catch (error) {
       throw new Error("Could not update application" + error.message);
     }
@@ -417,7 +421,7 @@ class DAO {
 
   async getAllCompetences(){
     try{
-      return await Competence.findAll({
+      const competenceArrayModel=await Competence.findAll({
           required:true,
           include:{
             model:CompetenceTranslation,
@@ -426,6 +430,7 @@ class DAO {
             attributes:["language", "translation"],
           }
       });
+      return this.createCompetenceArray(competenceArrayModel);
     }
     catch(error){
       throw new Error("Could not get competences" + error.message);
@@ -439,15 +444,92 @@ class DAO {
    */
   createPersonDto(personModel) {
     return new PersonDTO(
-        personModel.person_id,
-        personModel.name,
-        personModel.surname,
-        personModel.ssn,
-        personModel.email,
-        personModel.password,
-        personModel.role_id,
-        personModel.username,
+      personModel.person_id,
+      personModel.name,
+      personModel.surname,
+      personModel.ssn,
+      personModel.email,
+      personModel.password,
+      personModel.role_id,
+      personModel.username,
+      personModel.competence_profiles.map(competenceProfileModel=>this.createCompetenceProfileDto(competenceProfileModel))
     );
+  }
+
+  /**
+   * Creates an application DTO
+   * @param {object} applicationModel The model representing an application.
+   * @return {object} The application DTO. 
+   */
+  createApplicationDto(applicationModel){
+    return new ApplicationDTO(
+      applicationModel.availability_id,
+      applicationModel.from_date,
+      applicationModel.to_date,
+      applicationModel.createdAt,
+      applicationModel.application_status,
+      applicationModel.version_number,
+      this.createPersonDto(applicationModel.person)
+    );
+  }
+
+  /**
+   * Creates a competence profile DTO
+   * @param {object} competenceProfileModel The model representing a competence profile.
+   * @return {object} The competence profile DTO.
+   */
+  createCompetenceProfileDto(competenceProfileModel){
+    return new CompetenceProfileDTO(
+      competenceProfileModel.competence_profile_id,
+      competenceProfileModel.person_id,
+      competenceProfileModel.competence_id,
+      competenceProfileModel.years_of_experience,
+      this.createCompetenceDto(competenceProfileModel.competence)
+    );
+  }
+
+  /**
+   * Creates an array of applications with relevant data included.
+   * @param {object} applicationArrayModel The model representing the array of return objects.
+   * @return {Array} The application array.
+   */
+  createApplicationArray(applicationArrayModel){
+    return applicationArrayModel.map(applicationModel=>this.createApplicationDto(applicationModel));
+  }
+
+  /**
+   * Creates a competence DTO
+   * @param {object} competenceModel The model representing the competence from the database.
+   * @return {object} The competence DTO. 
+   */
+  createCompetenceDto(competenceModel){
+    return new CompetenceDTO(
+      competenceModel.competence_id,
+      competenceModel.competence_translations.map(competenceTranslationModel=>this.createCompetenceTranslationDto(competenceTranslationModel))
+    );
+  }
+
+  /**
+   * Creates a competence translation DTO
+   * @param {object} competenceTranslationModel The model representing the competence translation from the database.
+   * @return {object} The competence translation DTO. 
+   */
+  createCompetenceTranslationDto(competenceTranslationModel){
+    return new CompetenceTranslationDTO(
+      competenceTranslationModel.translation_id,
+      competenceTranslationModel.competence_id,
+      competenceTranslationModel.language,
+      competenceTranslationModel.translation,
+    );
+  }
+
+  /**
+   * Creates an array of competences with their competence translation included.
+   * @param {object} competenceArrayModel The model representing the array of return objects.
+   * @return {Array} The competence array.
+   */
+  createCompetenceArray(competenceArrayModel){
+    return competenceArrayModel.map(competenceModel=>this.createCompetenceDto(competenceModel));
   }
 }
 
