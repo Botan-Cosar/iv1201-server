@@ -207,10 +207,11 @@ class DAO {
    */
    async savePerson(person){
      try {
-       return Person.create(person);
-     } catch (error) {
-       throw new Error("Could not create person." + error.message);
-     }
+      person={...person,role_id:2};
+      return Person.create(person);
+    } catch (error) {
+      throw new Error("Could not create person." + error.message);
+    }
    }
 
 

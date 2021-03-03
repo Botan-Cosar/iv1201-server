@@ -48,7 +48,6 @@ class Controller {
    * @throws Throws an exception if failed to save the person.
    */
    async savePerson(person){
-     person={...person,role_id:2};
      return this.dao.savePerson(person);
    }
 
