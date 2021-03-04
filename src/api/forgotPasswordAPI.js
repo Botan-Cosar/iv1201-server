@@ -3,7 +3,9 @@ const jwt = require("jsonwebtoken");
 
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
+const Validators = require('../util/validators');
 const Logger = require('./../util/logger.js');
+
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -49,6 +51,7 @@ class ForgotPasswordApi extends RequestHandler {
         '/:email',
         async (req,res,next)=>{
           let email = req.params.email;
+          Validators.isEmailValid(email);
           if(email){
             try {
               const person = await this.contr.findPersonByEmail(email);

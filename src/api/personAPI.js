@@ -3,6 +3,7 @@
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
 const Logger = require('./../util/logger.js');
+const Validators = require('../util/validators');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -45,6 +46,7 @@ class PersonApi extends RequestHandler {
         '/',
         async (req,res,next)=>{
           try {
+            Validators.isAlphanumericString(req.body.username, 'username');
             //Check if unique fields are unique.
             const usernameTaken = await this.contr.findPersonByUsername(req.body.username);
             const emailTaken = await this.contr.findPersonByEmail(req.body.email);

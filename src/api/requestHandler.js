@@ -2,6 +2,7 @@
 
 const express = require('express');
 const Controller = require('../controller/controller');
+const Validators = require('../util/validators');
 
 /**
  * Superclass for all request handlers.
@@ -36,7 +37,7 @@ class RequestHandler {
    * @param {any} body The body of the response.
    */
   sendHttpResponse(res, status, body) {
-    //Validators.isIntegerBetween(status, 200, 501);
+    Validators.isNumberBetween(status, 200, 501, 'status');
     if (body === undefined) {
       res.status(status).end();
       return;
