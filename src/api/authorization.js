@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const Logger = require('./../util/logger.js');
 
 /*
   Format of token (header: key):
@@ -94,6 +95,7 @@ function isRecruiter(req, res, next){
     next();
   }
   else{ //Else user does not have right to access page.
+    Logger.logMessage("Unauthorized tried to access recruiter-only content, user: \"" + req.body.auth.username + "\", with id: " + req.body.auth.role_id);
     return res.status(403).send("Unauthorized, only recruiters can access this page");
   }
 }

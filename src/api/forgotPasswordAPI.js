@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
 const Validators = require('../util/validators');
+const Logger = require('./../util/logger.js');
+
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -52,18 +54,17 @@ class ForgotPasswordApi extends RequestHandler {
           Validators.isEmailValid(email);
           if(email){
             try {
-              console.log("reset password...");
-              console.log(req.protocol);
               const person = await this.contr.findPersonByEmail(email);
               if(person != null){
                 let response = {}
                 jwt.sign({email: email}, process.env.JWT_PUT_SECRET, {expiresIn: '30m'}, (err, token) => {
                   response.resetLink = process.env.REACT_URL + "updateperson/" + token;
-                  console.log(response);
+                  Logger.logMessage("Created reset link for user \"" + person.username + "\"");
                   this.sendHttpResponse(res,200,response);
                 })
               }
               else{
+                Logger.logMessage("Failed to find account with email for update details, email: \"" + email + "\"");
                 this.sendHttpResponse(res, 404, 'An account with that email was not found');
               }
             }

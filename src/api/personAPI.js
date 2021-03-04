@@ -2,6 +2,7 @@
 
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
+const Logger = require('./../util/logger.js');
 const Validators = require('../util/validators');
 
 /**
@@ -56,7 +57,10 @@ class PersonApi extends RequestHandler {
                 this.sendHttpResponse(res,404,'Could not save person');
                 return;
               }
+              console.log("creating ersopn");
               this.sendHttpResponse(res,200,response);
+              console.log("created peron");
+              Logger.logMessage("New user created: " + response.username);
             }
             else{
               if(usernameTaken)
@@ -85,6 +89,7 @@ class PersonApi extends RequestHandler {
             await this.contr.findPersonIdByAuth(auth).then((e) => person_id = e);
             if(!person_id){
               console.log("person_id: " + person_id + " could not be found");
+              Logger.logError(new Error("person_id: " + person_id + " could not be found"));
               this.sendHttpResponse(res,404,'Could not find person');
               return;
             }
@@ -93,7 +98,7 @@ class PersonApi extends RequestHandler {
 
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         }
       );
@@ -109,23 +114,22 @@ class PersonApi extends RequestHandler {
       this.router.get(
           '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
           async (req, res, next) => {
-            //console.log("personAPI in async (line 47)");
             try {
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {
                 this.sendHttpResponse(res, 404, 'No such person');
+                Logger.logError(new Error("Cannot GET person with id: " + req.params.id));
                 return;
               }
 
               this.sendHttpResponse(res, 200, person);
             } catch (err) {
-              next(err);
+              Logger.logError(err);
             }
           }
       );
     } catch (err) {
-      console.error(err);
-      //this.logger.logException(err);
+      Logger.logError(err);
     }
   }
 }

@@ -4,11 +4,16 @@ const Sequelize = require('sequelize');
 const PersonDTO = require('../model/personDTO');
 const Person = require('../model/person');
 const Role = require('../model/role');
+const CompetenceProfileDTO=require('../model/competenceProfileDTO');
 const CompetenceProfile=require('../model/competenceProfile');
+const CompetenceDTO = require('../model/competenceDTO');
 const Competence=require('../model/competence');
+const ApplicationDTO=require('../model/applicationDTO');
 const Availability=require('../model/availability');
+const CompetenceTranslationDTO=require('../model/competenceTranslationDTO');
 const CompetenceTranslation=require('../model/competenceTranslation');
 const Validators = require('../util/validators');
+const Logger = require('./../util/logger.js');
 
 /**
  * This class is responsible for all calls to the database. There shall not
@@ -40,7 +45,7 @@ class DAO {
           }
       );
     }
-    console.log("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
+    Logger.logMessage("logging \"LOG_SEQUALIZE\": " + (process.env.LOG_SEQUALIZE === "true" ? "true" : "false"));
 
     Role.createModel(this.database);
     Person.createModel(this.database);
@@ -207,10 +212,12 @@ class DAO {
    */
    async savePerson(person){
      try {
-       return Person.create(person);
-     } catch (error) {
-       throw new Error("Could not create person." + error.message);
-     }
+      person={...person,role_id:2};
+      await Person.create(person);
+      return "success";
+    } catch (error) {
+      throw new Error("Could not create person." + error.message);
+    }
    }
 
 
@@ -225,7 +232,7 @@ class DAO {
    async updatePerson(person_id, person){
      try {
        Validators.isPositiveInteger(person_id, 'person_id');
-       return Person.update({
+       await Person.update({
          name: person.name,
          surname: person.surname,
          ssn: person.ssn,
@@ -237,6 +244,7 @@ class DAO {
            person_id
          }
        });
+       return "success";
      } catch (error) {
        throw new Error("could not create person." + error.message);
      }
@@ -266,7 +274,6 @@ class DAO {
         email: personModel.email,
         role_id: personModel.role_id
       };
-      console.log(returnObject);
       return this.createPersonDto(returnObject);
     } catch (error) {
       throw new Error("could not login." + error.message);
@@ -274,90 +281,51 @@ class DAO {
   }
 
   /**
-   * Updates a competence profile if a matching person_id and competence_id already exists. Creates a new entry otherwise.
+   * Submits an application from the logged in user.
    *
-   * @param {number} person_id The id of the person
-   * @param {Array} competence A competence id along with years of experience.
+   * @param {Object} object consists of username, competencies, and periods of work.
+   * @return {Object} success object.
    *
-   * @throws Throws a "could not save competence profile." exception if failed to create competence profile.
+   * @throws Throws an exception if failed to submit the application.
    */
-  async updateOrCreateCompetenceProfile(person_id,competence){
+  async submitApplication({username,competencies,periods}){
+    const t=await this.database.transaction({autocommit:false});
     try {
-      Validators.isPositiveInteger(person_id, 'person_id');
-      const {competence_id,years_of_experience}=competence;
-      const competenceProfile={person_id,competence_id,years_of_experience};
-      const updatedEntry=await this.updateCompetenceProfile(competenceProfile);
-      if(updatedEntry[0]===0){
-        await this.createCompetenceProfile(competenceProfile);
-      }
-    } catch (error) {
-      throw new Error("could not save competence profile." + error.message);
-    }
-  }
+      const person_id=await this.findPersonIdByUsername(username);
 
-  /**
-   * Updates a competence profile entry.
-   *
-   * @param {Object} object Consists of: person_id, competence_id, and years_of_experience
-   * @return {Array} Array of updated entries.
-   *
-   * @throws Throws a "could not update competence profile." error if the entry could not be updated.
-   */
-  async updateCompetenceProfile({person_id,competence_id,years_of_experience}){
-    try {
-      const competenceModel=await CompetenceProfile.update({
-        years_of_experience
-      },{
-        where:{
-          person_id,
-          competence_id
-        }
+      const competenceProfiles=competencies.map(c=>{
+        return {person_id,...c};
       });
-      return competenceModel;
-    } catch (error) {
-      throw new Error("could not update competence profile." + error.message);
-    }
-  }
-
-  /**
-   * Saves a competence profile entry.
-   *
-   * @param {Object} competenceProfile Consists of: person_id, competence_id, and years_of_experience
-   * @return {Object} The newly created competence_profile.
-   *
-   * @throws Throws a "could not create competence profile." error if the entry could not be created.
-   */
-  async createCompetenceProfile(competenceProfile){
-    try {
-      const competenceModel=await CompetenceProfile.create(competenceProfile);
-      return competenceModel;
-    } catch (error) {
-      throw new Error("could not create competence profile." + error.message);
-    }
-  }
-
-  /**
-   * Saves an availability entry.
-   *
-   * @param {number} person_id The id of the person.
-   * @param {Array} period Consists of the start date and end date.
-   * @return {Object} The newly created availability.
-   *
-   * @throws Throws a "could not create availability." error if failed to be created.
-   */
-  async createAvailability(person_id,period){
-    try {
-      Validators.isPositiveInteger(person_id, 'person_id');
-      const {from_date,to_date}=period;
-      const availabilityModel=await Availability.create({
-        person_id,
-        from_date,
-        to_date,
-        version_number:0
+      const availabilities=periods.map(p=>{
+        return {person_id,...p,version_number:0};
       });
-      return availabilityModel;
+
+      await CompetenceProfile.bulkCreate(competenceProfiles,{
+        ignoreDuplicates:true,
+        transaction:t
+      });
+
+      competenceProfiles.map(async profile=>{
+        const {person_id,competence_id,years_of_experience}=profile;
+        const updatedEntry=await CompetenceProfile.update({
+          years_of_experience
+        },{
+          where:{
+            person_id,
+            competence_id
+          },
+          transaction:t
+        });
+        return updatedEntry;
+      })
+
+      await Availability.bulkCreate(availabilities,{transaction:t});
+      t.commit();
+      Logger.logMessage("Application submitted successfully for user: \"" + username + "\"");
+      return "success";
     } catch (error) {
-      throw new Error("could not create availability." + error.message);
+      t.rollback();
+      throw new Error("Failed to submit application." + error.message);
     }
   }
 
@@ -370,7 +338,7 @@ class DAO {
    */
   async findAllApplications(){
     try {
-      const applicationModel = await Availability.findAll({
+      const applicationArrayModel = await Availability.findAll({
         attributes:["availability_id","from_date","to_date","createdAt","application_status","version_number"],
         include:{
           model:Person,
@@ -379,7 +347,7 @@ class DAO {
           include:{
             model:CompetenceProfile,
             attributes:["years_of_experience"],
-            required:true,
+            required:false,
             include:{
               model:Competence,
               required:true,
@@ -393,8 +361,7 @@ class DAO {
           }
         }
       });
-      console.log(JSON.stringify(applicationModel));
-      return applicationModel;
+      return this.createApplicationArray(applicationArrayModel);
     } catch (error) {
       throw new Error("could not find all applications." + error.message);
     }
@@ -411,7 +378,7 @@ class DAO {
     try {
       Validators.isEmailValid(email);
       Validators.isStringNonZeroLength(password, 'password');
-      const personModel = await Person.update({
+      await Person.update({
         password: password,
       },{
         where:{
@@ -427,7 +394,9 @@ class DAO {
   /**
    * Updates the application status of a specified availability.
    *
-   * @param {number} id The availability id.
+   * @param {number} availability_id The availability id.
+   * @param {String} application_status The new status for the application.
+   * @param {number} version_number The version number for the status field.
    *
    * @throws Throws a "Could not update application" error if failed to update application.
    */
@@ -438,7 +407,7 @@ class DAO {
         throw new Error("Version number expired. Current version: " + currentVersion.version_number);
       }
       const nextVersionNumber=+version_number+1;
-      const availabilityModel=await Availability.update({
+      await Availability.update({
         application_status,
         version_number:nextVersionNumber
       },{
@@ -446,7 +415,7 @@ class DAO {
           availability_id
         }
       });
-      return availabilityModel;
+      return "success";
     } catch (error) {
       throw new Error("Could not update application" + error.message);
     }
@@ -454,7 +423,7 @@ class DAO {
 
   async getAllCompetences(){
     try{
-      return await Competence.findAll({
+      const competenceArrayModel=await Competence.findAll({
           required:true,
           include:{
             model:CompetenceTranslation,
@@ -463,6 +432,7 @@ class DAO {
             attributes:["language", "translation"],
           }
       });
+      return this.createCompetenceArray(competenceArrayModel);
     }
     catch(error){
       throw new Error("Could not get competences" + error.message);
@@ -476,15 +446,92 @@ class DAO {
    */
   createPersonDto(personModel) {
     return new PersonDTO(
-        personModel.person_id,
-        personModel.name,
-        personModel.surname,
-        personModel.ssn,
-        personModel.email,
-        personModel.password,
-        personModel.role_id,
-        personModel.username,
+      personModel.person_id,
+      personModel.name,
+      personModel.surname,
+      personModel.ssn,
+      personModel.email,
+      personModel.password,
+      personModel.role_id,
+      personModel.username,
+      personModel.competence_profiles.map(competenceProfileModel=>this.createCompetenceProfileDto(competenceProfileModel))
     );
+  }
+
+  /**
+   * Creates an application DTO
+   * @param {object} applicationModel The model representing an application.
+   * @return {object} The application DTO. 
+   */
+  createApplicationDto(applicationModel){
+    return new ApplicationDTO(
+      applicationModel.availability_id,
+      applicationModel.from_date,
+      applicationModel.to_date,
+      applicationModel.createdAt,
+      applicationModel.application_status,
+      applicationModel.version_number,
+      this.createPersonDto(applicationModel.person)
+    );
+  }
+
+  /**
+   * Creates a competence profile DTO
+   * @param {object} competenceProfileModel The model representing a competence profile.
+   * @return {object} The competence profile DTO.
+   */
+  createCompetenceProfileDto(competenceProfileModel){
+    return new CompetenceProfileDTO(
+      competenceProfileModel.competence_profile_id,
+      competenceProfileModel.person_id,
+      competenceProfileModel.competence_id,
+      competenceProfileModel.years_of_experience,
+      this.createCompetenceDto(competenceProfileModel.competence)
+    );
+  }
+
+  /**
+   * Creates an array of applications with relevant data included.
+   * @param {object} applicationArrayModel The model representing the array of return objects.
+   * @return {Array} The application array.
+   */
+  createApplicationArray(applicationArrayModel){
+    return applicationArrayModel.map(applicationModel=>this.createApplicationDto(applicationModel));
+  }
+
+  /**
+   * Creates a competence DTO
+   * @param {object} competenceModel The model representing the competence from the database.
+   * @return {object} The competence DTO. 
+   */
+  createCompetenceDto(competenceModel){
+    return new CompetenceDTO(
+      competenceModel.competence_id,
+      competenceModel.competence_translations.map(competenceTranslationModel=>this.createCompetenceTranslationDto(competenceTranslationModel))
+    );
+  }
+
+  /**
+   * Creates a competence translation DTO
+   * @param {object} competenceTranslationModel The model representing the competence translation from the database.
+   * @return {object} The competence translation DTO. 
+   */
+  createCompetenceTranslationDto(competenceTranslationModel){
+    return new CompetenceTranslationDTO(
+      competenceTranslationModel.translation_id,
+      competenceTranslationModel.competence_id,
+      competenceTranslationModel.language,
+      competenceTranslationModel.translation,
+    );
+  }
+
+  /**
+   * Creates an array of competences with their competence translation included.
+   * @param {object} competenceArrayModel The model representing the array of return objects.
+   * @return {Array} The competence array.
+   */
+  createCompetenceArray(competenceArrayModel){
+    return competenceArrayModel.map(competenceModel=>this.createCompetenceDto(competenceModel));
   }
 }
 

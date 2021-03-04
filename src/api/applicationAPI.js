@@ -2,6 +2,7 @@
 
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
+const Logger = require('./../util/logger.js');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -48,11 +49,12 @@ class ApplicationApi extends RequestHandler {
             const response=await this.contr.getApplications();
             if(response===null){
               this.sendHttpResponse(res,404,'Could not get applications');
+              Logger.logError(new Error("Could not get applications"));
               return;
             }
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         })
 
@@ -71,11 +73,12 @@ class ApplicationApi extends RequestHandler {
             const response=await this.contr.submitApplication({username,...req.body});
             if(response===null){
               this.sendHttpResponse(res,404,'Could not submit application');
+              Logger.logError(new Error("Username: \"" + username + "\" could not submit application"));
               return;
             }
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         }
       );
@@ -94,17 +97,17 @@ class ApplicationApi extends RequestHandler {
             const response=await this.contr.updateApplication({...req.body,availability_id:req.params.id});
             if(response===null){
               this.sendHttpResponse(res,404,'Could not update application');
+              Logger.logError(new Error("Could not update application"));
               return;
             }
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         }
       );
     } catch (err) {
-      console.error(err);
-      //this.logger.logException(err);
+      Logger.logError(err);
     }
   }
 }
