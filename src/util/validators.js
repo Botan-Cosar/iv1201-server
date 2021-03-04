@@ -67,6 +67,19 @@ class Validators {
     assert(validator.isAlphanumeric(value), `${varName} needs to only contain letters and numbers.`);
   }
 
+  /**
+   * Checks if the value is a number in the specified interval
+   * @param {any} value The value to check
+   * @param {number} lowerLimit The inclusive lower limit
+   * @param {number} upperLimit The inclusive upper limit
+   * @param {string} varName The name of the variable that holds the value
+   * @throws {AssertionError} If validation fails.
+   */
+  static isNumberBetween(value, lowerLimit, upperLimit, varName) {
+    Validators.isNumber(value, varName);
+    assert(value >= lowerLimit && value <= upperLimit, `${varName} needs to be a number between ${lowerLimit} and ${upperLimit}.`);
+  }
+
 }
 
 module.exports = Validators;
