@@ -66,6 +66,31 @@ class DAO {
   }
 
   /**
+   * Searches for a person with the specified parameter.
+   * 
+   * @param {*} param The search parameter.
+   * @return {object} The person with the specified parameter, or null if there was
+   *                  no such person.
+   * 
+   * @throws Throws an exception if failed to search for the specified person.
+   */
+  async findPersonByParameter(key,param){
+    try {
+      const personModel = await Person.findOne({
+        where:{
+          [key]:param
+        }
+      });
+      if (personModel === null) {
+        return null;
+      }
+      return dtoFactory.createPersonDto(personModel);
+    } catch (error) {
+        throw new Error("could not find person." + error.message);
+    }
+  }
+
+  /**
    * Searches for a person with the specified id.
    *
    * @param {number} id The id of the searched person.
@@ -74,16 +99,8 @@ class DAO {
    * @throws Throws an exception if failed to search for the specified person.
    */
   async findPersonById(id) {
-    try {
-      Validators.isPositiveInteger(id, 'id');
-      const personModel = await Person.findByPk(id);
-      if (personModel === null) {
-        return null;
-      }
-      return dtoFactory.createPersonDto(personModel);
-    } catch (error) {
-        throw new Error("could not find person." + error.message);
-    }
+    Validators.isPositiveInteger(id, 'id');
+    return await this.findPersonByParameter("person_id",id);
   }
 
   /**
@@ -95,20 +112,8 @@ class DAO {
    * @throws Throws an exception if failed to search for the specified person.
    */
   async findPersonByEmail(email) {
-    try {
-      Validators.isEmailValid(email);
-      const personModel = await Person.findOne({
-        where:{
-          email,
-        }
-      });
-      if (personModel === null) {
-        return null;
-      }
-      return dtoFactory.createPersonDto(personModel);
-    } catch (error) {
-        throw new Error("could not find person." + error.message);
-    }
+    Validators.isEmailValid(email);
+    return await this.findPersonByParameter("email",email);
   }
 
   /**
@@ -120,83 +125,26 @@ class DAO {
    * @throws Throws an exception if failed to search for the specified person.
    */
   async findPersonByUsername(username) {
-    try {
-      Validators.isStringNonZeroLength(username, 'username');
-      Validators.isAlphanumericString(username, 'username');
-      const personModel = await Person.findOne({
-        where:{
-          username,
-        }
-      });
-      if (personModel === null) {
-        return null;
-      }
-      return dtoFactory.createPersonDto(personModel);
-    } catch (error) {
-        throw new Error("could not find person." + error.message);
-    }
-  }
-
-  /**
-   * Searches for a person id with the specified username.
-   *
-   * @param {string} username The username of the searched person.
-   * @return {number} The person id with the specified username, or null if there was
-   *                  no such person.
-   * @throws Throws an exception if failed to find the specified person.
-   */
-  async findPersonIdByUsername(username) {
-    try {
-      Validators.isStringNonZeroLength(username, 'username');
-      Validators.isAlphanumericString(username, 'username');
-      const personModel = await Person.findOne({
-        where:{
-          username,
-        }
-      });
-      if (personModel === null) {
-        return null;
-      }
-      return personModel.person_id;
-    } catch (error) {
-        throw new Error("could not find person." + error.message);
-    }
+    Validators.isStringNonZeroLength(username, 'username');
+    Validators.isAlphanumericString(username, 'username');
+    return await this.findPersonByParameter("username",username);
   }
 
   /**
    * Finds a person by using the authentication data, which includes email, username and role_id.
-   * @param  {object} auth The authenticaiton object.
+   * @param  {object} auth The authentication object.
    * @return {number} The ID of the user
    *
    * @throws Throws an exception if failed to find the specified person.
    */
   async findPersonIdByAuth(auth){
-    try {
-      let personModel;
-      if(auth.username){
-        personModel = await Person.findOne({
-          where:{
-            username: auth.username,
-          }
-        });
-      }
-      else if(auth.email){
-        personModel = await Person.findOne({
-          where:{
-            email: auth.email,
-          }
-        });
-      }
-      if (personModel === null) {
-        return null;
-      }
-
-      return personModel.person_id;
-      }
-      catch (error) {
-        throw new Error("could not find person." + error.message);
-      }
+    const [key,value]=auth.username?["username",auth.username]:auth.email?["email",auth.email]:[null,null];
+    if(key){
+      const {person_id}=await this.findPersonByParameter(key,value);
+      return person_id
     }
+    throw new Error("could not find person." + error.message);
+  }
 
   /**
    * Saves a specified person in the database.
@@ -260,17 +208,13 @@ class DAO {
         where:{
           username:person.username,
           password:person.password
-        }
+        },
+        attributes:["username","email","role_id"],
       });
       if (personModel === null) {
         return null;
       }
-      let returnObject = {
-        username: personModel.username,
-        email: personModel.email,
-        role_id: personModel.role_id
-      };
-      return dtoFactory.createPersonDto(returnObject);
+      return dtoFactory.createPersonDto(personModel);
     } catch (error) {
       throw new Error("could not login." + error.message);
     }
@@ -287,7 +231,7 @@ class DAO {
   async submitApplication({username,competencies,periods}){
     const t=await this.database.transaction({autocommit:false});
     try {
-      const person_id=await this.findPersonIdByUsername(username);
+      const {person_id}=await this.findPersonByUsername(username);
 
       const competenceProfiles=competencies.map(c=>{
         return {person_id,...c};

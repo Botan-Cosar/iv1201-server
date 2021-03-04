@@ -74,7 +74,6 @@ class LoginApi extends RequestHandler {
       this.router.post(
         '/',
         async (req,res,next)=>{
-          Logger.logMessage("Login attempt failed for username: \"" + req.body.username + "\"");
           try {
             const response=await this.contr.login(req.body);
             if(response===null){
@@ -91,6 +90,7 @@ class LoginApi extends RequestHandler {
               });
             })
           } catch (err) {
+            Logger.logMessage("Login attempt failed for username: \"" + req.body.username + "\"");
             Logger.logError(err);
           }
         }

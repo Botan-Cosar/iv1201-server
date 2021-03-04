@@ -15,7 +15,7 @@ class HandleLackingData {
       return new Error("Could not find person by email or username");
     let emptyFields = {};
     for(var key in person){
-      if(person[key] == undefined || person[key] == null){
+      if((person[key] == undefined || person[key] == null) &&key!=="competence_profiles"){
         emptyFields[key] = true;
       }
     }
