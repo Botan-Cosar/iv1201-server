@@ -15,6 +15,7 @@ const dtoFactory=require('../model/dtoFactory');
  * This class is responsible for all calls to the database. There shall not
  * be any database-related code outside this class.
  */
+
 class DAO {
   /**
    * Creates a new instance and connects to the database.
@@ -67,11 +68,11 @@ class DAO {
 
   /**
    * Searches for a person with the specified parameter.
-   * 
+   *
    * @param {*} param The search parameter.
    * @return {object} The person with the specified parameter, or null if there was
    *                  no such person.
-   * 
+   *
    * @throws Throws an exception if failed to search for the specified person.
    */
   async findPersonByParameter(key,param){
@@ -146,7 +147,7 @@ class DAO {
         [key,value]=["username",auth.username];
       }
       else if(auth.email){
-        Validators.isEmailValid(email);
+        Validators.isEmailValid(auth.email);
         [key,value]=["email",auth.email];
       }
       const {person_id}=await this.findPersonByParameter(key,value);

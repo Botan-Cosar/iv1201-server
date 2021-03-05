@@ -2,7 +2,6 @@
 const jwt = require("jsonwebtoken");
 
 const RequestHandler = require('./requestHandler');
-const Authorizer = require('./authorization.js');
 const Validators = require('../util/validators');
 const Logger = require('./../util/logger.js');
 

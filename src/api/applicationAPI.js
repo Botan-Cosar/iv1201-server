@@ -44,7 +44,7 @@ class ApplicationApi extends RequestHandler {
         * @throws ???
         */
       this.router.get('/', Authorizer.verifyToken, Authorizer.isRecruiter,
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             const response=await this.contr.getApplications();
             if(response===null){
@@ -67,7 +67,7 @@ class ApplicationApi extends RequestHandler {
         */
       this.router.post(
         '/', Authorizer.verifyToken,
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             const username=req.body.auth.username;
             const response=await this.contr.submitApplication({username,...req.body});
@@ -92,7 +92,7 @@ class ApplicationApi extends RequestHandler {
         */
        this.router.put(
         '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             const response=await this.contr.updateApplication({...req.body,availability_id:req.params.id});
             if(response===null){

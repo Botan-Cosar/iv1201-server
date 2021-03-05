@@ -1,6 +1,4 @@
 'use strict';
-const jwt = require("jsonwebtoken");
-
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
 const Logger = require('./../util/logger.js');
@@ -39,7 +37,7 @@ class UpdatePersonApi extends RequestHandler {
 
       this.router.get(
         '/', Authorizer.verifyUpdatePerson,
-        async (req, res, next) => {
+        async (req, res) => {
           try {
             if(!req.body.auth){
               return new Error("No authentication in GET request body");

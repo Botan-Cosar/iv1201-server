@@ -48,7 +48,7 @@ class LoginApi extends RequestHandler {
        */
       this.router.get(
         '/check_validity', Authorizer.verifyToken,
-        async (req,res,next)=>{
+        async (req,res)=>{
           console.log("Token was valid");
           try {
             let response = {body: req.body.auth};
@@ -73,7 +73,7 @@ class LoginApi extends RequestHandler {
        */
       this.router.post(
         '/',
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             const response=await this.contr.login(req.body);
             if(response===null){

@@ -5,7 +5,9 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint --global require,exports,it,expect,jest,describe,const,module,process,next,console:true --ext .jsx --ext .js src/**"
   },
   "author": "",
   "license": "ISC",
@@ -15,11 +17,16 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "dotenv-safe": "^8.2.0",
+    "eslint": "^7.21.0",
     "express": "^4.17.1",
+    "jest": "^26.6.3",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.5.0",
     "validator": "^13.5.2"
+  },
+  "devDependencies": {
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.4.1"
   }
 }
