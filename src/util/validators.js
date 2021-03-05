@@ -57,6 +57,17 @@ class Validators {
   }
 
   /**
+   * Checks if the value is an alphabetic string
+   * @param {any} value The value to check
+   * @param {string} varName The name of the variable that holds the value
+   * @throws {AssertionError} If validation fails.
+   */
+  static isAlphaString(value,varName){
+    Validators.isString(value, varName);
+    assert(validator.isAlpha(value),`${varName} needs to only contain letters.`);
+  }
+
+  /**
    * Checks if the value is an alphanumeric string
    * @param {any} value The value to check
    * @param {string} varName The name of the variable that holds the value
@@ -78,6 +89,51 @@ class Validators {
   static isNumberBetween(value, lowerLimit, upperLimit, varName) {
     Validators.isNumber(value, varName);
     assert(value >= lowerLimit && value <= upperLimit, `${varName} needs to be a number between ${lowerLimit} and ${upperLimit}.`);
+  }
+
+  /**
+   * Checks that the specified value is a string representing a date.
+   *
+   * @param {any} value The value to check.
+   * @param {string} varName The name of the variable holding the value. Will
+   *                         be inserted in the error message if validation
+   *                         fails.
+   * @throws {AssertionError} If validation fails.
+   */
+  static isStringRepresentingDate(value, varName) {
+    Validators.isString(value, varName);
+    assert(
+        validator.isISO8601(value, {strict: true}),
+        `${varName} must be a valid date.`
+    );
+  }
+
+  /**
+   * Checks that the specified value is an object.
+   * 
+   * @param {any} value The value to check.
+   * @param {string} varName The name of the variable holding the value. Will
+   *                         be inserted in the error message if validation
+   *                         fails.
+   * @throws {AssertionError} If validation fails. 
+   */
+  static isObject(value,varName){
+    assert(typeof value==='object' && value !==null, `${varName} needs to be an object.`);
+  }
+
+  /**
+   * Checks if a second date is before a first date.
+   * @param  {string} firstDate The first date
+   * @param  {string} secondDate The second date
+   * @param  {string} varName1 The name of the variable
+   * @param  {string} varName2 The name of the variable
+   * @throws {AssertionError} If validation fails.
+   */
+  static dateIsNotPastDate(firstDate, secondDate, varName1, varName2){
+    //gets 00:00:00 of current day
+    let f = new Date(firstDate);
+    let s = new Date(secondDate);
+    assert.equal(f.getTime() <= s.getTime() && (firstDate !== null || secondDate !== null), true, "Second date (" + varName2 + ") cannot be before first date (" + varName1 + ")");
   }
 
 }

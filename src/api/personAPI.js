@@ -46,7 +46,17 @@ class PersonApi extends RequestHandler {
         '/',
         async (req,res,next)=>{
           try {
+            Validators.isStringNonZeroLength(req.body.name, 'name');
+            Validators.isAlphaString(req.body.name, 'name');
+            Validators.isStringNonZeroLength(req.body.surname, 'surname');
+            Validators.isAlphaString(req.body.surname, 'surname');
+            Validators.isStringRepresentingDate(req.body.ssn,'ssn');
+            Validators.isStringNonZeroLength(req.body.password, 'password');
+            Validators.isAlphanumericString(req.body.password, 'password');
+            Validators.isEmailValid(req.body.email,'email');
+            Validators.isStringNonZeroLength(req.body.username, 'username');
             Validators.isAlphanumericString(req.body.username, 'username');
+
             //Check if unique fields are unique.
             const usernameTaken = await this.contr.findPersonByUsername(req.body.username);
             const emailTaken = await this.contr.findPersonByEmail(req.body.email);
@@ -60,7 +70,7 @@ class PersonApi extends RequestHandler {
               console.log("creating ersopn");
               this.sendHttpResponse(res,200,response);
               console.log("created peron");
-              Logger.logMessage("New user created: " + response.username);
+              Logger.logMessage("New user created: " + req.body.username);
             }
             else{
               if(usernameTaken)

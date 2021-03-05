@@ -18,14 +18,15 @@ class ApplicationDTO {
    * @param {object} person The person the application belongs to.
    */
   constructor(availability_id, from_date, to_date, createdAt, application_status, version_number, person) {
-    availability_id&&Validators.isNumber(availability_id, 'availability_id');
-    from_date&&Validators.isStringNonZeroLength(from_date, 'from_date');
-    to_date&&Validators.isStringNonZeroLength(to_date, 'to_date');
-    //createdAt&&Validators.isStringNonZeroLength(createdAt, 'createdAt');
+    availability_id&&Validators.isPositiveInteger(availability_id, 'availability_id');
+    from_date&&Validators.isStringRepresentingDate(from_date,'from_date');
+    to_date&&Validators.isStringRepresentingDate(to_date,'to_date');
+    from_date&&to_date&&Validators.dateIsNotPastDate(from_date,to_date,"from_date","to_date");
     application_status&&Validators.isStringNonZeroLength(application_status, 'application_status');
     application_status&&Validators.isAlphanumericString(application_status, 'application_status');
     version_number&&Validators.isNumber(version_number, 'version_number');
-    //person&&Validators.isObject(person,'person');
+    person&&Validators.isObject(person,'person');
+
     this.availability_id = availability_id;
     this.from_date=from_date;
     this.to_date=to_date;

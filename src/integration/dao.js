@@ -138,12 +138,22 @@ class DAO {
    * @throws Throws an exception if failed to find the specified person.
    */
   async findPersonIdByAuth(auth){
-    const [key,value]=auth.username?["username",auth.username]:auth.email?["email",auth.email]:[null,null];
-    if(key){
+    try {
+      let [key,value]=[];
+      if(auth.username){
+        Validators.isStringNonZeroLength(auth.username, 'username');
+        Validators.isAlphanumericString(auth.username, 'username');
+        [key,value]=["username",auth.username];
+      }
+      else if(auth.email){
+        Validators.isEmailValid(email);
+        [key,value]=["email",auth.email];
+      }
       const {person_id}=await this.findPersonByParameter(key,value);
-      return person_id
+      return person_id;
+    } catch (error) {
+      throw new Error("could not find person." + error.message);
     }
-    throw new Error("could not find person." + error.message);
   }
 
   /**
@@ -156,6 +166,17 @@ class DAO {
    */
    async savePerson(person){
      try {
+      Validators.isStringNonZeroLength(person.name, 'name');
+      Validators.isAlphaString(person.name, 'name');
+      Validators.isStringNonZeroLength(person.surname, 'surname');
+      Validators.isAlphaString(person.surname, 'surname');
+      Validators.isStringRepresentingDate(person.ssn,'ssn');
+      Validators.isStringNonZeroLength(person.password, 'password');
+      Validators.isAlphanumericString(person.password, 'password');
+      Validators.isEmailValid(person.email,'email');
+      Validators.isStringNonZeroLength(person.username, 'username');
+      Validators.isAlphanumericString(person.username, 'username');
+
       person={...person,role_id:2};
       await Person.create(person);
       return "success";
@@ -231,12 +252,19 @@ class DAO {
   async submitApplication({username,competencies,periods}){
     const t=await this.database.transaction({autocommit:false});
     try {
+      Validators.isStringNonZeroLength(username, 'username');
+      Validators.isAlphanumericString(username, 'username');
       const {person_id}=await this.findPersonByUsername(username);
 
       const competenceProfiles=competencies.map(c=>{
+        Validators.isNumber(c.competence_id,"competence_id");
+        Validators.isNumber(c.years_of_experience,"years_of_experience");
         return {person_id,...c};
       });
       const availabilities=periods.map(p=>{
+        Validators.isStringRepresentingDate(p.from_date,"from_date");
+        Validators.isStringRepresentingDate(p.to_date,"to_date");
+        Validators.dateIsNotPastDate(p.from_date,p.to_date,"from_date","to_date");
         return {person_id,...p,version_number:0};
       });
 
