@@ -44,7 +44,7 @@ class PersonApi extends RequestHandler {
        */
       this.router.post(
         '/',
-        async (req,res,next)=>{
+        async (req, res)=>{
           try {
             Validators.isStringNonZeroLength(req.body.name, 'name');
             Validators.isAlphaString(req.body.name, 'name');
@@ -79,7 +79,7 @@ class PersonApi extends RequestHandler {
                 this.sendHttpResponse(res,406,'Could not create account, not unique email');
             }
           } catch (err) {
-            next(err);
+            Logger.logError(err);
           }
         }
       );
@@ -92,7 +92,7 @@ class PersonApi extends RequestHandler {
        */
       this.router.put(
         '/', Authorizer.verifyUpdatePerson,
-        async (req,res,next)=>{
+        async (req, res)=>{
           let auth = req.body.auth;
           try {
             req.body.name&&Validators.isStringNonZeroLength(req.body.name, 'name');
@@ -134,7 +134,7 @@ class PersonApi extends RequestHandler {
         */
       this.router.get(
           '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
-          async (req, res, next) => {
+          async (req, res) => {
             try {
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {

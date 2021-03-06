@@ -45,7 +45,7 @@ class ApplicationApi extends RequestHandler {
         * @throws ???
         */
       this.router.get('/', Authorizer.verifyToken, Authorizer.isRecruiter,
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             const response=await this.contr.getApplications();
             if(response===null){
@@ -68,7 +68,7 @@ class ApplicationApi extends RequestHandler {
         */
       this.router.post(
         '/', Authorizer.verifyToken,
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             req.body.competencies.forEach(c=>{
               Validators.isNumber(c.competence_id,"competence_id");
@@ -103,7 +103,7 @@ class ApplicationApi extends RequestHandler {
         */
        this.router.put(
         '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             Validators.isPositiveInteger(req.params.id,"req.params.id");
             Validators.applicationStatusIsValid(req.body.application_status,'application_status');

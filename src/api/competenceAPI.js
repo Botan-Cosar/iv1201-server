@@ -47,7 +47,7 @@ class CompetenceAPI extends RequestHandler {
         */
       this.router.get(
           '/list', Authorizer.verifyToken,
-          async (req, res, next) => {
+          async (req, res) => {
             try {
               const competenceList = await this.contr.getAllCompetences();
               if (competenceList === null) {

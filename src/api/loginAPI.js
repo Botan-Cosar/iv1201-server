@@ -49,7 +49,7 @@ class LoginApi extends RequestHandler {
        */
       this.router.get(
         '/check_validity', Authorizer.verifyToken,
-        async (req,res,next)=>{
+        async (req,res)=>{
           console.log("Token was valid");
           try {
             let response = {body: req.body.auth};
@@ -74,7 +74,7 @@ class LoginApi extends RequestHandler {
        */
       this.router.post(
         '/',
-        async (req,res,next)=>{
+        async (req,res)=>{
           try {
             Validators.isStringNonZeroLength(req.body.username, 'username');
             Validators.isAlphanumericString(req.body.username, 'username');

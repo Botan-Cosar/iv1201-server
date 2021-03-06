@@ -1,10 +1,9 @@
 "use strict";
-
 const path=require("path");
-const APP_ROOT_DIR = path.join(__dirname, '..');
+const APP_ROOT_DIR = path.join(__dirname, '..'); // eslint-disable-line
 
 if (process.env.NODE_ENV !== "production") {
-    const result = require('dotenv-safe').config({
+    require('dotenv-safe').config({
     path: path.join(APP_ROOT_DIR, '.env'),
     example: path.join(APP_ROOT_DIR, '.env.example'),
     });

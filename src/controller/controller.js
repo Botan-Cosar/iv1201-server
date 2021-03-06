@@ -2,7 +2,6 @@
 
 const DAO = require('../integration/dao');
 const HandleLackingData = require('../model/handleLackingData');
-const PersonDTO = require('../model/personDTO');
 
 /**
  * The application's controller. No other class shall call the model or
