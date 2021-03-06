@@ -3,6 +3,7 @@
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
 const Logger = require('./../util/logger.js');
+const Validators = require('../util/validators');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -69,6 +70,16 @@ class ApplicationApi extends RequestHandler {
         '/', Authorizer.verifyToken,
         async (req,res,next)=>{
           try {
+            req.body.competencies.forEach(c=>{
+              Validators.isNumber(c.competence_id,"competence_id");
+              Validators.isNumber(c.years_of_experience,"years_of_experience");
+            });
+            req.body.periods.forEach(p=>{
+              Validators.isStringRepresentingDate(p.from_date,"from_date");
+              Validators.isStringRepresentingDate(p.to_date,"to_date");
+              Validators.dateIsNotPastDate(p.from_date,p.to_date,"from_date","to_date");
+            });
+
             const username=req.body.auth.username;
             const response=await this.contr.submitApplication({username,...req.body});
             if(response===null){
@@ -94,6 +105,9 @@ class ApplicationApi extends RequestHandler {
         '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
         async (req,res,next)=>{
           try {
+            Validators.isPositiveInteger(req.params.id,"req.params.id");
+            Validators.applicationStatusIsValid(req.body.application_status,'application_status');
+            Validators.isNumber(req.body.version_number,"version_number");
             const response=await this.contr.updateApplication({...req.body,availability_id:req.params.id});
             if(response===null){
               this.sendHttpResponse(res,404,'Could not update application');

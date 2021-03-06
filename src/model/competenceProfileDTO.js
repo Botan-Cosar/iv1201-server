@@ -16,11 +16,10 @@ class CompetenceProfileDTO {
    * @param {object} competence The competence object belonging to the competence profile.
    */
   constructor(competence_profile_id, person_id, competence_id, years_of_experience,competence) {
-    competence_profile_id&&Validators.isNumber(competence_profile_id, 'competence_profile_id');
-    person_id&&Validators.isNumber(person_id, 'person_id');
-    competence_id&&Validators.isNumber(competence_id, 'competence_id');
-    //years_of_experience&&Validators.isNumber(years_of_experience, 'years_of_experience');
-    //competence&&Validators.isObject(competence,'competence');
+    competence_profile_id&&Validators.isPositiveInteger(competence_profile_id, 'competence_profile_id');
+    person_id&&Validators.isPositiveInteger(person_id, 'person_id');
+    competence_id&&Validators.isPositiveInteger(competence_id, 'competence_id');
+    competence&&Validators.isObject(competence,'competence');
     this.competence_profile_id = competence_profile_id;
     this.person_id=person_id;
     this.competence_id=competence_id;

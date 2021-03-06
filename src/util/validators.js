@@ -95,9 +95,7 @@ class Validators {
    * Checks that the specified value is a string representing a date.
    *
    * @param {any} value The value to check.
-   * @param {string} varName The name of the variable holding the value. Will
-   *                         be inserted in the error message if validation
-   *                         fails.
+   * @param {string} varName The name of the variable holding the value.
    * @throws {AssertionError} If validation fails.
    */
   static isStringRepresentingDate(value, varName) {
@@ -112,13 +110,22 @@ class Validators {
    * Checks that the specified value is an object.
    * 
    * @param {any} value The value to check.
-   * @param {string} varName The name of the variable holding the value. Will
-   *                         be inserted in the error message if validation
-   *                         fails.
+   * @param {string} varName The name of the variable holding the value.
    * @throws {AssertionError} If validation fails. 
    */
   static isObject(value,varName){
     assert(typeof value==='object' && value !==null, `${varName} needs to be an object.`);
+  }
+
+  /**
+   * Checks that the specified value is an array.
+   * 
+   * @param {any} value The value to check.
+   * @param {string} varName The name of the variable holding the value.
+   * @throws {AssertionError} If validation fails.
+   */
+  static isArray(value,varName){
+    assert(Array.isArray(value),`${varName} needs to be an array.`);
   }
 
   /**
@@ -134,6 +141,28 @@ class Validators {
     let f = new Date(firstDate);
     let s = new Date(secondDate);
     assert.equal(f.getTime() <= s.getTime() && (firstDate !== null || secondDate !== null), true, "Second date (" + varName2 + ") cannot be before first date (" + varName1 + ")");
+  }
+
+  /**
+   * Checks if the application status has a valid value.
+   * @param {string} value The value to check.
+   * @param {string} varName The name of the variable.
+   * @throws {AssertionError} If validation fails.
+   */
+  static applicationStatusIsValid(value, varName){
+    assert(value==="accepted"||value==="rejected"||value===null,`${varName} needs to be either accepted, rejected, or null.`);
+  }
+
+  /**
+   * Checks if the version number is valid.
+   * @param {number} currentVersionNumber The current version
+   * @param {number} userVersionNumber The version the user sent
+   * @param {string} varNameCurrent The name of the variable
+   * @param {string} varNameUser The name of the variable
+   * @throws {AssertionError} If validation fails.
+   */
+  static versionNumberIsValid(currentVersionNumber,userVersionNumber,varNameCurrent,varNameUser){
+    assert(currentVersionNumber==userVersionNumber,`${varNameUser} is not valid. ${varNameCurrent} is ${currentVersionNumber}`);
   }
 
 }

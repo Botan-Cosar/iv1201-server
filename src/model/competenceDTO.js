@@ -13,8 +13,8 @@ class CompetenceDTO {
    * @param {Array} competence_translations The translations belonging to this competence.
    */
   constructor(competence_id,competence_translations) {
-    competence_id&&Validators.isNumber(competence_id, 'competence_id');
-    //competence_translations&&Validators.isArray(competence_translations,'competence_translations');
+    competence_id&&Validators.isPositiveInteger(competence_id, 'competence_id');
+    competence_translations&&Validators.isArray(competence_translations,'competence_translations');
     this.competence_id = competence_id;
     this.competence_translations=competence_translations;
   }

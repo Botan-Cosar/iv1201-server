@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const RequestHandler = require('./requestHandler');
 const Authorizer = require('./authorization.js');
 const Logger = require('./../util/logger.js');
+const Validators = require('../util/validators');
 
 /**
  * Defines the REST API with endpoints related to persons.
@@ -75,6 +76,10 @@ class LoginApi extends RequestHandler {
         '/',
         async (req,res,next)=>{
           try {
+            Validators.isStringNonZeroLength(req.body.username, 'username');
+            Validators.isAlphanumericString(req.body.username, 'username');
+            Validators.isStringNonZeroLength(req.body.password, 'password');
+            Validators.isAlphanumericString(req.body.password, 'password');
             const response=await this.contr.login(req.body);
             if(response===null){
               this.sendHttpResponse(res,404,'Could not log in');

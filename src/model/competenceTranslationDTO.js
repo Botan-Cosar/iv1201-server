@@ -15,8 +15,8 @@ class CompetenceTranslationDTO {
    * @param {string} translation The translated text.
    */
   constructor(translation_id, competence_id, language, translation) {
-    translation_id&&Validators.isNumber(translation_id, 'translation_id');
-    competence_id&&Validators.isNumber(competence_id, 'competence_id');
+    translation_id&&Validators.isPositiveInteger(translation_id, 'translation_id');
+    competence_id&&Validators.isPositiveInteger(competence_id, 'competence_id');
     language&&Validators.isStringNonZeroLength(language, 'language');
     language&&Validators.isAlphanumericString(language, 'language');
     translation&&Validators.isStringNonZeroLength(translation, 'translation');

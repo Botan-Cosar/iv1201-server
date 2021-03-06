@@ -95,6 +95,17 @@ class PersonApi extends RequestHandler {
         async (req,res,next)=>{
           let auth = req.body.auth;
           try {
+            req.body.name&&Validators.isStringNonZeroLength(req.body.name, 'name');
+            req.body.name&&Validators.isAlphaString(req.body.name, 'name');
+            req.body.surname&&Validators.isStringNonZeroLength(req.body.surname, 'surname');
+            req.body.surname&&Validators.isAlphaString(req.body.surname, 'surname');
+            req.body.ssn&&Validators.isStringRepresentingDate(req.body.ssn,'ssn');
+            req.body.password&&Validators.isStringNonZeroLength(req.body.password, 'password');
+            req.body.password&&Validators.isAlphanumericString(req.body.password, 'password');
+            req.body.email&&Validators.isEmailValid(req.body.email,'email');
+            req.body.username&&Validators.isStringNonZeroLength(req.body.username, 'username');
+            req.body.username&&Validators.isAlphanumericString(req.body.username, 'username');
+
             let person_id;
             await this.contr.findPersonIdByAuth(auth).then((e) => person_id = e);
             if(!person_id){

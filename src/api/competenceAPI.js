@@ -37,7 +37,7 @@ class CompetenceAPI extends RequestHandler {
     try {
       await this.retrieveController();
 
-       /** sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+       /**
         * Returns the specified person.
         *
         * @param {int} id The id of the person that shall be returned.

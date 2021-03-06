@@ -176,7 +176,6 @@ class DAO {
       Validators.isEmailValid(person.email,'email');
       Validators.isStringNonZeroLength(person.username, 'username');
       Validators.isAlphanumericString(person.username, 'username');
-
       person={...person,role_id:2};
       await Person.create(person);
       return "success";
@@ -196,23 +195,34 @@ class DAO {
     */
    async updatePerson(person_id, person){
      try {
-       Validators.isPositiveInteger(person_id, 'person_id');
-       await Person.update({
-         name: person.name,
-         surname: person.surname,
-         ssn: person.ssn,
-         email: person.email,
-         password: person.password,
-         username: person.username
-       },{
-         where: {
-           person_id
-         }
-       });
-       return "success";
-     } catch (error) {
-       throw new Error("could not create person." + error.message);
-     }
+      Validators.isPositiveInteger(person_id, 'person_id');
+      person.name&&Validators.isStringNonZeroLength(person.name, 'name');
+      person.name&&Validators.isAlphaString(person.name, 'name');
+      person.surname&&Validators.isStringNonZeroLength(person.surname, 'surname');
+      person.surname&&Validators.isAlphaString(person.surname, 'surname');
+      person.ssn&&Validators.isStringRepresentingDate(person.ssn,'ssn');
+      person.password&&Validators.isStringNonZeroLength(person.password, 'password');
+      person.password&&Validators.isAlphanumericString(person.password, 'password');
+      person.email&&Validators.isEmailValid(person.email,'email');
+      person.username&&Validators.isStringNonZeroLength(person.username, 'username');
+      person.username&&Validators.isAlphanumericString(person.username, 'username');
+
+      await Person.update({
+        name: person.name,
+        surname: person.surname,
+        ssn: person.ssn,
+        email: person.email,
+        password: person.password,
+        username: person.username
+      },{
+        where: {
+          person_id
+        }
+      });
+      return "success";
+    } catch (error) {
+      throw new Error("could not create person." + error.message);
+    }
    }
 
   /**
@@ -225,6 +235,10 @@ class DAO {
    */
   async login(person){
     try {
+      Validators.isStringNonZeroLength(person.username, 'username');
+      Validators.isAlphanumericString(person.username, 'username');
+      Validators.isStringNonZeroLength(person.password, 'password');
+      Validators.isAlphanumericString(person.password, 'password');
       const personModel=await Person.findOne({
         where:{
           username:person.username,
@@ -346,6 +360,7 @@ class DAO {
     try {
       Validators.isEmailValid(email);
       Validators.isStringNonZeroLength(password, 'password');
+      Validators.isAlphanumericString(password, 'password');
       await Person.update({
         password: password,
       },{
@@ -370,10 +385,11 @@ class DAO {
    */
   async updateApplication({availability_id,application_status,version_number}){
     try {
+      Validators.isPositiveInteger(availability_id,"availability_id");
+      Validators.applicationStatusIsValid(application_status,'application_status');
+      Validators.isNumber(version_number,"version_number");
       const currentVersion=await Availability.findByPk(availability_id,{attributes:["version_number"]});
-      if(currentVersion.version_number!=version_number){
-        throw new Error("Version number expired. Current version: " + currentVersion.version_number);
-      }
+      Validators.versionNumberIsValid(currentVersion.version_number,version_number,"current version number","user version number");
       const nextVersionNumber=+version_number+1;
       await Availability.update({
         application_status,
@@ -385,7 +401,7 @@ class DAO {
       });
       return "success";
     } catch (error) {
-      throw new Error("Could not update application" + error.message);
+      throw new Error("Could not update application. " + error.message);
     }
   }
 
