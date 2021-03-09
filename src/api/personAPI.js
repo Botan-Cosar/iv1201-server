@@ -67,9 +67,7 @@ class PersonApi extends RequestHandler {
                 this.sendHttpResponse(res,404,'Could not save person');
                 return;
               }
-              console.log("creating ersopn");
               this.sendHttpResponse(res,200,response);
-              console.log("created peron");
               Logger.logMessage("New user created: " + req.body.username);
             }
             else{
@@ -106,10 +104,15 @@ class PersonApi extends RequestHandler {
             req.body.username&&Validators.isStringNonZeroLength(req.body.username, 'username');
             req.body.username&&Validators.isAlphanumericString(req.body.username, 'username');
 
+            const emailTaken = await this.contr.findPersonByEmail(req.body.email);
+            if(emailTaken){
+              this.sendHttpResponse(res,406,'Could not create account, not unique email');
+              return;
+            }
+
             let person_id;
             await this.contr.findPersonIdByAuth(auth).then((e) => person_id = e);
             if(!person_id){
-              console.log("person_id: " + person_id + " could not be found");
               Logger.logError(new Error("person_id: " + person_id + " could not be found"));
               this.sendHttpResponse(res,404,'Could not find person');
               return;

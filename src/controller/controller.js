@@ -118,11 +118,7 @@ class Controller {
    * @throws Throws an exception if failed to submit the application.
    */
   async submitApplication(params){
-    try {
-      return this.dao.submitApplication(params);
-    } catch (error) {
-      throw new Error("Failed to submit application.");
-    }
+    return this.dao.submitApplication(params);
   }
   /**
    * Sets the password of a user based on email.
