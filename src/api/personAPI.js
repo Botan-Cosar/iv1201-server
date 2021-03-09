@@ -100,14 +100,16 @@ class PersonApi extends RequestHandler {
             req.body.ssn&&Validators.isStringRepresentingDate(req.body.ssn,'ssn');
             req.body.password&&Validators.isStringNonZeroLength(req.body.password, 'password');
             req.body.password&&Validators.isAlphanumericString(req.body.password, 'password');
-            req.body.email&&Validators.isEmailValid(req.body.email,'email');
             req.body.username&&Validators.isStringNonZeroLength(req.body.username, 'username');
             req.body.username&&Validators.isAlphanumericString(req.body.username, 'username');
 
-            const emailTaken = await this.contr.findPersonByEmail(req.body.email);
-            if(emailTaken){
-              this.sendHttpResponse(res,406,'Could not create account, not unique email');
-              return;
+            if(req.body.email){
+              Validators.isEmailValid(req.body.email,'email');
+              const emailTaken = await this.contr.findPersonByEmail(req.body.email);
+              if(emailTaken){
+                this.sendHttpResponse(res,406,'Could not create account, not unique email');
+                return;
+              }
             }
 
             let person_id;
