@@ -42,10 +42,9 @@ class ApplicationApi extends RequestHandler {
         *
         * @return {obj} 200: The success object.
         *               404: If the applications could not be retrieved.
-        * @throws ???
         */
       this.router.get('/', Authorizer.verifyToken, Authorizer.isRecruiter,
-        async (req,res)=>{
+        async (req,res,next)=>{
           try {
             const response=await this.contr.getApplications();
             if(response===null){
@@ -55,7 +54,8 @@ class ApplicationApi extends RequestHandler {
             }
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            Logger.logError(err);
+            this.sendHttpResponse(res,404,'Could not get applications');
+            next(err);
           }
         })
 
@@ -64,11 +64,10 @@ class ApplicationApi extends RequestHandler {
         *
         * @return {obj} 200: The success object.
         *               404: If the application could not be submitted.
-        * @throws ???
         */
       this.router.post(
         '/', Authorizer.verifyToken,
-        async (req,res)=>{
+        async (req,res,next)=>{
           try {
             req.body.competencies.forEach(c=>{
               Validators.isNumber(c.competence_id,"competence_id");
@@ -89,7 +88,8 @@ class ApplicationApi extends RequestHandler {
             }
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            Logger.logError(err);
+            this.sendHttpResponse(res,404,'Could not submit application');
+            next(err);
           }
         }
       );
@@ -99,11 +99,10 @@ class ApplicationApi extends RequestHandler {
         *
         * @return {obj} 200: The success object.
         *               404: If the application could not be updated.
-        * @throws ???
         */
        this.router.put(
         '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
-        async (req,res)=>{
+        async (req,res,next)=>{
           try {
             Validators.isPositiveInteger(req.params.id,"req.params.id");
             Validators.applicationStatusIsValid(req.body.application_status,'application_status');
@@ -116,7 +115,8 @@ class ApplicationApi extends RequestHandler {
             }
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            Logger.logError(err);
+            this.sendHttpResponse(res,404,'Could not update application');
+            next(err);
           }
         }
       );

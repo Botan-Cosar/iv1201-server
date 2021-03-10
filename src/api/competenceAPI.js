@@ -43,11 +43,10 @@ class CompetenceAPI extends RequestHandler {
         * @param {int} id The id of the person that shall be returned.
         * @return {obj} 200: The searched person.
         *               404: If the specified person did not exist.
-        * @throws ???
         */
       this.router.get(
           '/list', Authorizer.verifyToken,
-          async (req, res) => {
+          async (req, res,next) => {
             try {
               const competenceList = await this.contr.getAllCompetences();
               if (competenceList === null) {
@@ -58,12 +57,13 @@ class CompetenceAPI extends RequestHandler {
 
               this.sendHttpResponse(res, 200, competenceList);
             } catch (err) {
-              Logger.logError(err);
+              this.sendHttpResponse(res, 404, 'No competences found');
+              next(err);
             }
           }
       );
     } catch (err) {
-        Logger.logError(err);
+      Logger.logError(err);
     }
   }
 }

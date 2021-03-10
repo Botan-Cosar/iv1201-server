@@ -40,11 +40,10 @@ class PersonApi extends RequestHandler {
        * Saves a specified person in the database.
        * @return {obj} 200: Success object with the newly created person inside.
        *               404: If the specified person could not be saved.
-       * @throws ???
        */
       this.router.post(
         '/',
-        async (req, res)=>{
+        async (req, res, next)=>{
           try {
             Validators.isStringNonZeroLength(req.body.name, 'name');
             Validators.isAlphaString(req.body.name, 'name');
@@ -77,7 +76,8 @@ class PersonApi extends RequestHandler {
                 this.sendHttpResponse(res,406,'Could not create account, not unique email');
             }
           } catch (err) {
-            Logger.logError(err);
+            this.sendHttpResponse(res,404,'Could not save person');
+            next(err);
           }
         }
       );
@@ -86,11 +86,10 @@ class PersonApi extends RequestHandler {
        * Updates the accessing user in the database.
        * @return {obj} 200: Success object with the newly updated person inside.
        *               404: If the specified person to update could not be found.
-       * @throws ???
        */
       this.router.put(
         '/', Authorizer.verifyUpdatePerson,
-        async (req, res)=>{
+        async (req, res, next)=>{
           let auth = req.body.auth;
           try {
             req.body.name&&Validators.isStringNonZeroLength(req.body.name, 'name');
@@ -124,7 +123,8 @@ class PersonApi extends RequestHandler {
 
             this.sendHttpResponse(res,200,response);
           } catch (err) {
-            Logger.logError(err);
+            this.sendHttpResponse(res,404,'Could not find person');
+            next(err);
           }
         }
       );
@@ -135,11 +135,10 @@ class PersonApi extends RequestHandler {
         * @param {int} id The id of the person that shall be returned.
         * @return {obj} 200: The searched person.
         *               404: If the specified person did not exist.
-        * @throws ???
         */
       this.router.get(
           '/:id', Authorizer.verifyToken, Authorizer.isRecruiter,
-          async (req, res) => {
+          async (req, res, next) => {
             try {
               const person = await this.contr.findPerson(parseInt(req.params.id, 10));
               if (person === null) {
@@ -150,7 +149,8 @@ class PersonApi extends RequestHandler {
 
               this.sendHttpResponse(res, 200, person);
             } catch (err) {
-              Logger.logError(err);
+              this.sendHttpResponse(res, 404, 'No such person');
+              next(err);
             }
           }
       );

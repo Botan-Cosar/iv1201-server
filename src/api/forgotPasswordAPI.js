@@ -44,7 +44,6 @@ class ForgotPasswordApi extends RequestHandler {
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.
        *               403: invalid token error
-       * @throws ???
        */
       this.router.get(
         '/:email',
@@ -68,6 +67,7 @@ class ForgotPasswordApi extends RequestHandler {
               }
             }
             catch (err) {
+              this.sendHttpResponse(res, 404, 'An account with that email was not found');
               next(err);
             }
           }
@@ -77,7 +77,7 @@ class ForgotPasswordApi extends RequestHandler {
         }
       );
     } catch (err) {
-      console.error(err);
+      Logger.logError(err);
     }
   }
 }

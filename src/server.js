@@ -27,7 +27,7 @@ app.get("/",(req,res)=>{
 
 const reqHandlerLoader = require('./api');
 reqHandlerLoader.loadHandlers(app);
-//reqHandlerLoader.loadErrorHandlers(app);
+reqHandlerLoader.loadErrorHandlers(app);
 
 const port=process.env.PORT||process.env.SERVER_PORT;
 const server=app.listen(port,()=>{

@@ -45,11 +45,10 @@ class LoginApi extends RequestHandler {
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.
        *               403: invalid token error
-       * @throws ???
        */
       this.router.get(
         '/check_validity', Authorizer.verifyToken,
-        async (req,res)=>{
+        async (req,res,next)=>{
           try {
             let response = {body: req.body.auth};
             this.sendHttpResponse(res, 200, response);
@@ -59,21 +58,17 @@ class LoginApi extends RequestHandler {
           }
         }
       );
-    } catch (err) {
-      Logger.logError(err);
-    }
-    try {
+      
       /**
        * Logs in the user if login details match database.
        *
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.
        *               404: Could not log in.
-       * @throws ???
        */
       this.router.post(
         '/',
-        async (req,res)=>{
+        async (req,res,next)=>{
           try {
             Validators.isStringNonZeroLength(req.body.username, 'username');
             Validators.isAlphanumericString(req.body.username, 'username');
@@ -94,8 +89,9 @@ class LoginApi extends RequestHandler {
               });
             })
           } catch (err) {
+            this.sendHttpResponse(res,404,'Could not log in');
             Logger.logMessage("Login attempt failed for username: \"" + req.body.username + "\"");
-            Logger.logError(err);
+            next(err);
           }
         }
       );

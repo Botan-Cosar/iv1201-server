@@ -37,10 +37,10 @@ class UpdatePersonApi extends RequestHandler {
 
       this.router.get(
         '/', Authorizer.verifyUpdatePerson,
-        async (req, res) => {
+        async (req, res, next) => {
           try {
             if(!req.body.auth){
-              return new Error("No authentication in GET request body");
+              this.sendHttpResponse(res, 404, "No authentication in GET request body");
             }
             let response = {};
             await this.contr.personNeedsToFillEmptyFields(req.body.auth).then(e => {
@@ -49,7 +49,8 @@ class UpdatePersonApi extends RequestHandler {
             });
           }
           catch (err) {
-            Logger.logError(err);
+            this.sendHttpResponse(res, 404, "No authentication in GET request body");
+            next(err);
           }
         }
     );
