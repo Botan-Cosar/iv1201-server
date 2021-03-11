@@ -38,6 +38,16 @@ class PersonApi extends RequestHandler {
       await this.retrieveController();
       /**
        * Saves a specified person in the database.
+       * 
+       * @param {obj} req.body {
+       *   "name": The first name of the person,
+       *   "surname": The surname of the person,
+       *   "ssn": The birth date of the person (yyyy-mm-dd),
+       *   "password": The password of the person,
+       *   "email": The email of the person,
+       *   "username": The username of the person
+       * }
+       * 
        * @return {obj} 200: Success object with the newly created person inside.
        *               404: If the specified person could not be saved.
        */
@@ -84,6 +94,16 @@ class PersonApi extends RequestHandler {
 
       /**
        * Updates the accessing user in the database.
+       * 
+       * @param {obj} req.body {
+       *   "name": The first name of the person,
+       *   "surname": The surname of the person,
+       *   "ssn": The birth date of the person (yyyy-mm-dd),
+       *   "password": The password of the person,
+       *   "email": The email of the person,
+       *   "username": The username of the person
+       * }
+       * 
        * @return {obj} 200: Success object with the newly updated person inside.
        *               404: If the specified person to update could not be found.
        */
@@ -132,7 +152,7 @@ class PersonApi extends RequestHandler {
        /**
         * Returns the specified person.
         *
-        * @param {int} id The id of the person that shall be returned.
+        * @param {number} id The id of the person that shall be returned.
         * @return {obj} 200: The searched person.
         *               404: If the specified person did not exist.
         */

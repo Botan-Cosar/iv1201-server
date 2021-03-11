@@ -40,7 +40,8 @@ class ForgotPasswordApi extends RequestHandler {
 
       /**
        * Checks if the user's authorize header token is still valid.
-       *
+       *  
+       * @param {string} email The email of the user.
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.
        *               403: invalid token error

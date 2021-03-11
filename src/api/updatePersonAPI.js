@@ -35,6 +35,12 @@ class UpdatePersonApi extends RequestHandler {
     try {
       await this.retrieveController();
 
+      /**
+        * Returns the empty fields of a user.
+        *
+        * @return {obj} 200: The empty fields.
+        *               404: If the user is missing authentication.
+        */
       this.router.get(
         '/', Authorizer.verifyUpdatePerson,
         async (req, res, next) => {

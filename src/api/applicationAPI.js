@@ -61,7 +61,18 @@ class ApplicationApi extends RequestHandler {
 
       /**
         * Handles application submissions.
-        *
+        * 
+        * @param {obj} req.body {
+        *    "competencies":[{
+        *        "competence_id": The id of the competence,
+        *        "years_of_experience": The years of experience
+        *        }],
+        *    "periods":[{
+        *        "from_date": The starting date of the availability,
+        *        "to_date": The end date of the availability
+        *    }]
+        * }
+        * 
         * @return {obj} 200: The success object.
         *               404: If the application could not be submitted.
         */
@@ -96,6 +107,12 @@ class ApplicationApi extends RequestHandler {
 
       /**
         * Handles application acceptance and rejections.
+        * 
+        * @param {number} id The id of the application to update.
+        * @param {obj} req.body {
+        *      "application_status": The new status of the application (null, "accepted", "rejected"),
+        *      "version_number": The version number of the application
+        * }
         *
         * @return {obj} 200: The success object.
         *               404: If the application could not be updated.

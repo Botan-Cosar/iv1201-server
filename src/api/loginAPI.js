@@ -61,6 +61,11 @@ class LoginApi extends RequestHandler {
       
       /**
        * Logs in the user if login details match database.
+       * 
+       * @param {obj} req.body {
+       *    "username": The username of the user,
+       *    "password": The password of the user
+       * }
        *
        * @return {obj} http response with code 200 including the user's
        *               username, role, name and verification token.

@@ -38,11 +38,10 @@ class CompetenceAPI extends RequestHandler {
       await this.retrieveController();
 
        /**
-        * Returns the specified person.
+        * Returns a list of competences.
         *
-        * @param {int} id The id of the person that shall be returned.
-        * @return {obj} 200: The searched person.
-        *               404: If the specified person did not exist.
+        * @return {obj} 200: The searched competence list.
+        *               404: If the list could not be retrieved.
         */
       this.router.get(
           '/list', Authorizer.verifyToken,
